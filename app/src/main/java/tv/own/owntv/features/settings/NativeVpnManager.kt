@@ -4,6 +4,7 @@ import android.content.Context
 import com.wireguard.android.backend.GoBackend
 import com.wireguard.android.backend.Tunnel
 import com.wireguard.config.Config
+import tv.own.owntv.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayInputStream
@@ -43,8 +44,8 @@ object NativeVpnManager {
     fun savedProvider(): String =
         if (::appContext.isInitialized) {
             appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                .getString(KEY_PROVIDER, "Custom WireGuard") ?: "Custom WireGuard"
-        } else "Custom WireGuard"
+                .getString(KEY_PROVIDER, appContext.getString(R.string.settings_vpn_provider_custom_wireguard)) ?: appContext.getString(R.string.settings_vpn_provider_custom_wireguard)
+        } else ""
 
     fun saveConfig(provider: String, config: String) {
         appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -61,7 +62,7 @@ object NativeVpnManager {
 
     suspend fun connect(configText: String): Result<Unit> = withContext(Dispatchers.IO) {
         runCatching {
-            if (configText.isBlank()) error("No WireGuard configuration has been imported.")
+            if (configText.isBlank()) throw IllegalArgumentException()
             val config = Config.parse(ByteArrayInputStream(configText.toByteArray(Charsets.UTF_8)))
             backend.setState(tunnel, Tunnel.State.UP, config)
         }
