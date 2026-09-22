@@ -1,5 +1,7 @@
 name: Android CI
 
+# Manual APK build trigger test: 2026-09-22
+
 # Three jobs:
 #   verify-pin — core pin bumps ONLY. Seconds, no build. See its own note.
 #   check      — unit tests + lint. Gates the build. Skipped on core pin bumps.
