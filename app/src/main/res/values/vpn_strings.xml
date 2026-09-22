@@ -51,6 +51,10 @@
         <item>@string/settings_vpn_provider_airvpn</item>
         <item>@string/settings_vpn_provider_ivpn</item>
     </string-array>
+    <string name="settings_epg_uk_presets">UK EPG presets</string>
+    <string name="settings_epg_uk_preset_name">UK EPG %1$d</string>
+    <string name="settings_epg_uk_sources_title">UK EPG sources</string>
+    <string name="settings_epg_uk_sources_description">Choose one of the preconfigured UK EPG sources.</string>
     <string name="free_uk_tv_add">🇬🇧 Add Free UK TV</string>
     <string name="free_uk_tv_name">🇬🇧 Free UK TV</string>
     <string name="free_uk_tv_licence_required">TV Licence required</string>
