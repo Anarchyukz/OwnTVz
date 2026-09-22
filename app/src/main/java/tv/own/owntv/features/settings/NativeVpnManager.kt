@@ -65,6 +65,7 @@ object NativeVpnManager {
             if (configText.isBlank()) throw IllegalArgumentException()
             val config = Config.parse(ByteArrayInputStream(configText.toByteArray(Charsets.UTF_8)))
             backend.setState(tunnel, Tunnel.State.UP, config)
+            Unit
         }
     }
 
