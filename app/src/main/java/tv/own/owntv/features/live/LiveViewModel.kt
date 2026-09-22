@@ -887,6 +887,10 @@ class LiveViewModel(
         // the instant OK is pressed, before this can run.
         if (_liveOnExo.value) return
         val source = sourceById[channel.sourceId]
+        if (source?.name == FreeUkTv.SOURCE_NAME && !FreeUkTv.isAcknowledged(appContext)) {
+            _ukTvLicenseRequired.value = channel
+            return
+        }
         if (streamUrlResolver.needsResolve(source)) { playPreviewStalker(channel, source!!); return }
         val targetUrl = tuneUrl(channel, source)
         // A one-session panel counts the muted preview as the account's single stream, so previewing while
@@ -1394,6 +1398,10 @@ class LiveViewModel(
             val pid = currentProfileId() ?: return@launch
             if (!tv.own.owntv.core.content.AdultCategoryClassifier.allows(pid, channel.categoryId, profileDao, categoryDao)) return@launch
             val source = withContext(Dispatchers.IO) { sourceDao.getById(channel.sourceId) }
+            if (source?.name == FreeUkTv.SOURCE_NAME && !FreeUkTv.isAcknowledged(appContext)) {
+                _ukTvLicenseRequired.value = channel
+                return@launch
+            }
             val url = if (streamUrlResolver.needsResolve(source)) {
                 withContext(Dispatchers.IO) {
                     runCatching { streamUrlResolver.resolve(source!!, channel.streamUrl) }
