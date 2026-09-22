@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_vpn_title">VPN</string>
+    <string name="settings_vpn_provider">VPN provider</string>
+    <string name="settings_vpn_provider_hint">Select the provider for the WireGuard configuration</string>
+    <string name="settings_vpn_change">Change</string>
+    <string name="settings_vpn_configuration">WireGuard configuration</string>
+    <string name="settings_vpn_import">Import WireGuard config</string>
+    <string name="settings_vpn_choose_file">Choose file</string>
+    <string name="settings_vpn_no_config">No WireGuard configuration imported</string>
+    <string name="settings_vpn_config_ready">Configuration is ready to use</string>
+    <string name="settings_vpn_config_loaded">WireGuard configuration loaded</string>
+    <string name="settings_vpn_read_failed">Could not read the configuration file</string>
+    <string name="settings_vpn_provider_note">Most commercial VPN providers do not accept their normal website username and password directly through Android VpnService. They provide a WireGuard configuration or another tunnel-specific credential. This screen uses the official WireGuard Android tunnel backend and imports those provider configurations.</string>
+    <string name="settings_vpn_connect">Connect</string>
+    <string name="settings_vpn_disconnect">Disconnect</string>
+    <string name="settings_vpn_working">Working…</string>
+    <string name="settings_vpn_connected">VPN connected</string>
+    <string name="settings_vpn_disconnected">VPN disconnected</string>
+    <string name="settings_vpn_failed">VPN connection failed</string>
+    <string name="settings_vpn_status_connected">Status: Connected</string>
+    <string name="settings_vpn_status_disconnected">Status: Disconnected</string>
+    <string name="settings_vpn_privacy">When a full-tunnel WireGuard configuration contains 0.0.0.0/0 and/or ::/0 in AllowedIPs, Android routes the device traffic through the VPN. The provider configuration controls the actual routes and DNS.</string>
+</resources>
