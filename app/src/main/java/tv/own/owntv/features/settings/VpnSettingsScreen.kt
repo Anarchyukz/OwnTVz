@@ -140,7 +140,7 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
         Spacer(Modifier.height(12.dp))
         GroupLabel(stringResource(R.string.settings_vpn_configuration))
         Row2(
-            icon = OwnTVIcon.DOWNLOAD,
+            icon = OwnTVIcon.NETWORK,
             title = stringResource(R.string.settings_vpn_import),
             desc = if (config.isBlank()) {
                 stringResource(R.string.settings_vpn_no_config)
