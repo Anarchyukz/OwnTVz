@@ -190,7 +190,13 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
             onDismissRequest = { showProviders = false },
             fontScale = .50f,
         ) {
-            Column(modifier = Modifier.padding(24.dp).widthIn(min = 420.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .widthIn(min = 420.dp)
+                    .heightIn(max = 620.dp)
+                    .verticalScroll(rememberScrollState()),
+            ) {
                 Text(stringResource(R.string.settings_vpn_provider), style = MaterialTheme.typography.titleLarge, color = colors.onSurface)
                 Spacer(Modifier.height(12.dp))
                 providers.forEach { item ->
