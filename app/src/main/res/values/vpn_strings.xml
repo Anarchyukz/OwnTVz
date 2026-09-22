@@ -21,6 +21,36 @@
     <string name="settings_vpn_status_connected">Status: Connected</string>
     <string name="settings_vpn_status_disconnected">Status: Disconnected</string>
     <string name="settings_vpn_privacy">When a full-tunnel WireGuard configuration contains 0.0.0.0/0 and/or ::/0 in AllowedIPs, Android routes the device traffic through the VPN. The provider configuration controls the actual routes and DNS.</string>
+    <string name="settings_vpn_provider_custom_wireguard">Custom WireGuard</string>
+    <string name="settings_vpn_provider_nordvpn">NordVPN</string>
+    <string name="settings_vpn_provider_surfshark">Surfshark</string>
+    <string name="settings_vpn_provider_expressvpn">ExpressVPN</string>
+    <string name="settings_vpn_provider_protonvpn">Proton VPN</string>
+    <string name="settings_vpn_provider_ipvanish">IPVanish</string>
+    <string name="settings_vpn_provider_cyberghost">CyberGhost</string>
+    <string name="settings_vpn_provider_pia">Private Internet Access</string>
+    <string name="settings_vpn_provider_mullvad">Mullvad</string>
+    <string name="settings_vpn_provider_windscribe">Windscribe</string>
+    <string name="settings_vpn_provider_hideme">hide.me</string>
+    <string name="settings_vpn_provider_purevpn">PureVPN</string>
+    <string name="settings_vpn_provider_airvpn">AirVPN</string>
+    <string name="settings_vpn_provider_ivpn">IVPN</string>
+    <string-array name="settings_vpn_providers">
+        <item>@string/settings_vpn_provider_custom_wireguard</item>
+        <item>@string/settings_vpn_provider_nordvpn</item>
+        <item>@string/settings_vpn_provider_surfshark</item>
+        <item>@string/settings_vpn_provider_expressvpn</item>
+        <item>@string/settings_vpn_provider_protonvpn</item>
+        <item>@string/settings_vpn_provider_ipvanish</item>
+        <item>@string/settings_vpn_provider_cyberghost</item>
+        <item>@string/settings_vpn_provider_pia</item>
+        <item>@string/settings_vpn_provider_mullvad</item>
+        <item>@string/settings_vpn_provider_windscribe</item>
+        <item>@string/settings_vpn_provider_hideme</item>
+        <item>@string/settings_vpn_provider_purevpn</item>
+        <item>@string/settings_vpn_provider_airvpn</item>
+        <item>@string/settings_vpn_provider_ivpn</item>
+    </string-array>
     <string name="free_uk_tv_add">🇬🇧 Add Free UK TV</string>
     <string name="free_uk_tv_name">🇬🇧 Free UK TV</string>
     <string name="free_uk_tv_licence_required">TV Licence required</string>
