@@ -8,6 +8,9 @@ on:
         type: boolean
         required: false
         default: false
+  push:
+    branches:
+      - feature/native-vpn
 
 permissions:
   contents: read
