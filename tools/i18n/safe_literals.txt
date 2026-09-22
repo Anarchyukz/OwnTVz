@@ -19,6 +19,7 @@
 # category protocol: Stable protocol or comparison identifier.
 # category technical: Reviewed non-user-facing technical literal.
 
+3	empty	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	\0
 1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	BgImage
 1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	OwnTVHome
 1	compiler	app/src/main/java/tv/own/owntv/MainActivity.kt	RememberReturnType
@@ -256,7 +257,6 @@
 1	protocol	app/src/main/java/tv/own/owntv/features/settings/DeleteSubtitlesScreen.kt	· S${season}E${episode}
 1	technical	app/src/main/java/tv/own/owntv/features/settings/DeleteSubtitlesViewModel.kt	MOVIE
 1	technical	app/src/main/java/tv/own/owntv/features/settings/DeleteSubtitlesViewModel.kt	SERIES
-3	empty	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesViewModel.kt	add
 1	technical	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesViewModel.kt	manual_resync
 1	technical	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesViewModel.kt	update
@@ -503,7 +503,7 @@
 1	empty	app/src/main/java/tv/own/owntv/features/shell/components/MediaDetailsScreen.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/features/shell/components/MediaDetailsScreen.kt	·
 8	empty	app/src/main/java/tv/own/owntv/features/shell/components/SettingsScreen.kt	\0
-5	technical	app/src/main/java/tv/own/owntv/features/shell/components/SettingsScreen.kt	#
+11	technical	app/src/main/java/tv/own/owntv/features/shell/components/SettingsScreen.kt	#
 1	technical	app/src/main/java/tv/own/owntv/features/shell/components/SettingsScreen.kt	#%06X
 1	technical	app/src/main/java/tv/own/owntv/features/shell/components/SettingsScreen.kt	#F5B400
 1	technical	app/src/main/java/tv/own/owntv/features/shell/components/SettingsScreen.kt	#FFFFFF
@@ -1101,3 +1101,20 @@
 1	technical	app/src/main/java/tv/own/owntv/ui/theme/Glass.kt	glassPosition
 2	empty	app/src/main/java/tv/own/owntv/ui/theme/OwnTVColors.kt	\0
 2	empty	app/src/main/java/tv/own/owntv/ui/theme/Theme.kt	\0
+1	url	app/src/main/java/tv/own/owntv/features/live/FreeUkTv.kt	https://raw.githubusercontent.com/Anarchyukz/OwnTVz/24ea038e735e5f8e76dc9f970d04e46697f57cfe/app/src/main/assets/free_uk_tv.m3u
+1	preference-key	app/src/main/java/tv/own/owntv/features/live/FreeUkTv.kt	uk_live_tv_licence_acknowledged
+2	technical	app/src/main/java/tv/own/owntv/features/live/FreeUkTv.kt	owntv_legal
+1	preference-key	app/src/main/java/tv/own/owntv/features/settings/NativeVpnManager.kt	native_vpn
+1	preference-key	app/src/main/java/tv/own/owntv/features/settings/NativeVpnManager.kt	wireguard_config
+1	preference-key	app/src/main/java/tv/own/owntv/features/settings/NativeVpnManager.kt	provider
+1	technical	app/src/main/java/tv/own/owntv/features/settings/NativeVpnManager.kt	owntv-vpn
+4	empty	app/src/main/java/tv/own/owntv/features/settings/NativeVpnManager.kt	\0
+1	empty	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	\0
+1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	application/octet-stream
+1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	text/plain
+
+1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://raw.githubusercontent.com/RNIB-MediaAndCulture/Freeview-EPG_AD-filter/master/epg.xml
+1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://raw.githubusercontent.com/farleyflex/epg-guide/main/epg.xml
+1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://iptv-org.github.io/epg/guides/uk/sky.com.epg.xml
+1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz
+1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/UK_guide.xml.gz

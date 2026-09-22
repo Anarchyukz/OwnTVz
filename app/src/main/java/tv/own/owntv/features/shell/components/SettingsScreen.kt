@@ -155,7 +155,7 @@ internal val LocalSettingsRowTone = staticCompositionLocalOf { TileTone.PRIMARY 
 private fun Toned(tone: TileTone, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalSettingsRowTone provides tone, content = content)
 
-private enum class SettingsTab { ROOT, RECORDING, LANGUAGE, SOURCES, EPG, PROFILES, BACKUP, LOCAL_SYNC, VIDEO, CUSTOMIZE, HOME, NETWORK, DNS, METADATA, OPEN_SUBTITLES, WEATHER, NAV_MENU, CH_NAV, PANEL_WIDTH, GUIDE_WIDTH, GLASS_EFFECT, CONTENT_MENUS }
+private enum class SettingsTab { ROOT, RECORDING, LANGUAGE, SOURCES, EPG, PROFILES, BACKUP, LOCAL_SYNC, VIDEO, CUSTOMIZE, HOME, NETWORK, DNS, METADATA, OPEN_SUBTITLES, WEATHER, NAV_MENU, CH_NAV, PANEL_WIDTH, GUIDE_WIDTH, GLASS_EFFECT, CONTENT_MENUS, VPN }
 
 @Composable
 internal fun surroundModeLabel(mode: SurroundMode): String = stringResource(
@@ -433,6 +433,7 @@ fun SettingsScreen(
         SettingsTab.CUSTOMIZE -> { CustomizeScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier); return }
         SettingsTab.HOME -> { Toned(TileTone.SECONDARY) { HomeSettingsScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier) }; return }
         SettingsTab.NETWORK -> { Toned(TileTone.SECONDARY) { tv.own.owntv.features.settings.NetworkSettingsScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier) }; return }
+        SettingsTab.VPN -> { Toned(TileTone.SECONDARY) { tv.own.owntv.features.settings.VpnSettingsScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier) }; return }
         SettingsTab.DNS -> { Toned(TileTone.SECONDARY) { tv.own.owntv.features.settings.DnsSettingsScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier) }; return }
         SettingsTab.METADATA -> { tv.own.owntv.features.settings.MetadataSettingsScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier); return }
         SettingsTab.OPEN_SUBTITLES -> { tv.own.owntv.features.settings.OpenSubtitlesAccountScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier); return }
@@ -735,6 +736,12 @@ fun SettingsScreen(
             title = stringResource(R.string.common_proxy), desc = stringResource(R.string.settings_proxy_description),
             focus = rowFocus.getValue(SettingsTab.NETWORK),
             onClick = { open(SettingsTab.NETWORK) },
+        ),
+        RootRow(
+            tabRowKey(SettingsTab.VPN), TileTone.SECONDARY, OwnTVIcon.NETWORK,
+            title = stringResource(R.string.settings_vpn_title), desc = stringResource(R.string.settings_vpn_provider_hint),
+            focus = rowFocus.getValue(SettingsTab.VPN),
+            onClick = { open(SettingsTab.VPN) },
         ),
         RootRow(
             tabRowKey(SettingsTab.DNS), TileTone.SECONDARY, OwnTVIcon.DNS,
@@ -1066,6 +1073,7 @@ fun SettingsScreen(
             SettingsSearchEntry(videoPlayerGroup, stringResource(R.string.settings_live_preroll), stringResource(R.string.settings_search_keywords_live_preroll), OwnTVIcon.LIVE_TV, TileTone.TERTIARY) { open(SettingsTab.VIDEO) },
             SettingsSearchEntry(videoPlayerGroup, stringResource(R.string.settings_detailed_playback_logging), stringResource(R.string.settings_search_keywords_detailed_logging), OwnTVIcon.INFO, TileTone.SECONDARY) { open(SettingsTab.VIDEO) },
             SettingsSearchEntry(stringResource(R.string.settings_group_network), stringResource(R.string.common_proxy), stringResource(R.string.settings_search_keywords_proxy), OwnTVIcon.NETWORK, TileTone.SECONDARY) { open(SettingsTab.NETWORK) },
+             SettingsSearchEntry(stringResource(R.string.settings_group_network), stringResource(R.string.settings_vpn_title), stringResource(R.string.settings_vpn_provider_hint), OwnTVIcon.NETWORK, TileTone.SECONDARY) { open(SettingsTab.VPN) },
             SettingsSearchEntry(stringResource(R.string.settings_group_network), stringResource(R.string.settings_dns), stringResource(R.string.settings_search_keywords_dns), OwnTVIcon.DNS, TileTone.SECONDARY) { open(SettingsTab.DNS) },
             SettingsSearchEntry(stringResource(R.string.settings_group_app), stringResource(R.string.settings_app_startup), stringResource(R.string.settings_search_keywords_startup), OwnTVIcon.POWER, TileTone.SECONDARY,
                 chip = startupLabel(startupMode)) { saveScroll(); dialogReturn = searchFieldFocus; showStartup = true },

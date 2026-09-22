@@ -2,6 +2,8 @@
 
 package tv.own.owntv.features.live
 
+import tv.own.owntv.R
+
 import tv.own.owntv.core.epg.displayLogoUrl
 import android.content.Context
 import android.util.Log
@@ -887,6 +889,10 @@ class LiveViewModel(
         // the instant OK is pressed, before this can run.
         if (_liveOnExo.value) return
         val source = sourceById[channel.sourceId]
+        if (source?.url == FreeUkTv.PLAYLIST_URL && !FreeUkTv.isAcknowledged(appContext)) {
+            _ukTvLicenseRequired.value = channel
+            return
+        }
         if (streamUrlResolver.needsResolve(source)) { playPreviewStalker(channel, source!!); return }
         val targetUrl = tuneUrl(channel, source)
         // A one-session panel counts the muted preview as the account's single stream, so previewing while
@@ -1394,6 +1400,10 @@ class LiveViewModel(
             val pid = currentProfileId() ?: return@launch
             if (!tv.own.owntv.core.content.AdultCategoryClassifier.allows(pid, channel.categoryId, profileDao, categoryDao)) return@launch
             val source = withContext(Dispatchers.IO) { sourceDao.getById(channel.sourceId) }
+            if (source?.url == FreeUkTv.PLAYLIST_URL && !FreeUkTv.isAcknowledged(appContext)) {
+                _ukTvLicenseRequired.value = channel
+                return@launch
+            }
             val url = if (streamUrlResolver.needsResolve(source)) {
                 withContext(Dispatchers.IO) {
                     runCatching { streamUrlResolver.resolve(source!!, channel.streamUrl) }
@@ -1451,8 +1461,28 @@ class LiveViewModel(
     /** Internal playback: the canonical ExoPlayer / mpv / Stalker / history side-effects for a
      *  channel. Direct-tune's background rebuild path calls this without cancelling the rebuild
      *  so the in-flight rebuild it owns isn't killed by its own play. */
+    private val _ukTvLicenseRequired = MutableStateFlow<ChannelEntity?>(null)
+    val ukTvLicenseRequired: StateFlow<ChannelEntity?> = _ukTvLicenseRequired.asStateFlow()
+
+    fun acceptUkTvLicense(channel: ChannelEntity) {
+        FreeUkTv.setAcknowledged(appContext, true)
+        _ukTvLicenseRequired.value = null
+        ensurePlaying(channel)
+    }
+
+    fun dismissUkTvLicense() {
+        _ukTvLicenseRequired.value = null
+    }
+
+
     private suspend fun playChannel(channel: ChannelEntity) {
         val pid = currentProfileId() ?: return
+        val source = getSource(channel.sourceId)
+        if (source?.name == appContext.getString(R.string.free_uk_tv_name) && !FreeUkTv.isAcknowledged(appContext)) {
+            _ukTvLicenseRequired.value = channel
+            return
+        }
+
         if (!tv.own.owntv.core.content.AdultCategoryClassifier.allows(pid, channel.categoryId, profileDao, categoryDao)) return
         // Live TV set to play externally: hand the channel over instead of tuning an in-app engine.
         // History is still recorded, so the channel shows up in History/Recently watched either way.

@@ -115,7 +115,11 @@ fun OwnTVTextField(
             // Tell the shared popup before showing the IME. If this TV publishes no inset/frame
             // change, the calibrated estimate still constrains the modal immediately.
             tvImeWatcher?.onImeRequested()
+            // Request focus first, then give Compose a frame to establish the input connection
+            // before asking Android to display the software keyboard. This is important on phones,
+            // where showing the IME immediately after requestFocus() can be ignored.
             runCatching { innerFocus.requestFocus() }
+            kotlinx.coroutines.delay(50)
             keyboard?.show()
             kotlinx.coroutines.delay(120)
             runCatching { bringIntoView.bringIntoView() }

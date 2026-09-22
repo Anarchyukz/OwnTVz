@@ -98,7 +98,7 @@ fun Sidebar(
     val scope = rememberCoroutineScope()
     // Phase 2 — the nav is a FIXED icon rail: it never expands or collapses, so the layout never jumps on
     // the D-pad. The profile avatar is pinned at the bottom (Phase 1). Full section labels live in the panes.
-    val expanded = false
+    val expanded = true
     // Phase 4 — Search left the rail for the top bar, so when Search is the active section there's no nav
     // item to receive the entry-focus redirect below. Fall back to Home so BACK / left out of Search still
     // lands in the rail instead of stranding focus in the content area.
@@ -127,13 +127,13 @@ fun Sidebar(
                 if (entered) scope.launch { runCatching { selectedItemFocusRequester.requestFocus() } }
             }
             .focusGroup()
-            .width(Dimens.SidebarWidthCollapsed)
+            .width(188.dp)
             // The top bar owns the complete top strip. The plate starts below it and shares the main
             // content panel's 6 dp bottom inset; the horizontal inset keeps the existing shell gap.
-            .padding(start = 6.dp, top = topInset, end = 6.dp, bottom = 6.dp)
+            .padding(start = 10.dp, top = topInset, end = 8.dp, bottom = 8.dp)
             .roundedPanel(fillColor = RailPanelFill, surface = GlassSurface.SIDEBAR)
             // Keep the plate aligned while lowering the logo slightly inside it.
-            .padding(top = 12.dp, bottom = 12.dp),
+            .padding(start = 8.dp, top = 16.dp, end = 8.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Phase 2 — brand mark pinned at the top of the rail. Non-focusable, so D-pad entry into the
@@ -456,9 +456,7 @@ private fun NavItem(
     modifier: Modifier = Modifier,
 ) {
     val colors = OwnTVTheme.colors
-    // Approved compact beacon: the focus owner still spans the rail for reliable D-pad targeting,
-    // while the visible selection is a centered 48 dp tile with its own marker and soft halo.
-    val shape = RoundedCornerShape(13.dp)
+    val shape = RoundedCornerShape(14.dp)
     FocusableSurface(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
@@ -467,68 +465,48 @@ private fun NavItem(
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
         selectedContainerColor = Color.Transparent,
-        // The visible fill is rendered by the inner nav ladder, but the outer focus owner still
-        // needs to know this is glass so it does not create a scale/shadow layer while scrolling.
         surface = GlassSurface.SIDEBAR,
         showFocusBorder = false,
         renderSelectionContainer = false,
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.CenterStart,
     ) { focused ->
-        val ladder = rememberNavLadderColors(
-            selected = active,
-            focused = focused,
-        )
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            // A separate 3 dp marker stays readable after focus moves away, in solid and glass modes.
-            NavAccentBar(visible = ladder.showAccentBar, height = 22.dp)
+        val ladder = rememberNavLadderColors(selected = active, focused = focused)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(shape)
+                .then(if (active || focused) Modifier.background(
+                    if (active) colors.primary.copy(alpha = 0.18f) else colors.surfaceContainerHigh.copy(alpha = 0.78f),
+                    shape,
+                ) else Modifier)
+                .then(
+                    if (active) Modifier.border(1.dp, colors.primary.copy(alpha = if (focused) 0.95f else 0.60f), shape)
+                    else if (focused) Modifier.border(tv.own.owntv.ui.theme.LocalFocusBorderWidth.current, ladder.focusBorder ?: colors.primary, shape)
+                    else Modifier
+                )
+                .padding(horizontal = 14.dp, vertical = 11.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
             Box(
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(39.dp)
-                    .then(
-                        if (active) Modifier.shadow(
-                            elevation = 6.dp,
-                            shape = shape,
-                            ambientColor = colors.primary.copy(alpha = 0.30f),
-                            spotColor = colors.primary.copy(alpha = 0.30f),
-                            clip = false,
-                        ) else Modifier
-                    )
-                    .clip(shape)
-                    // Material follows the active mode; compact geometry stays identical in both.
-                    .glass(surface = GlassSurface.SIDEBAR, baseFill = ladder.container, shape = shape)
-                    .then(
-                        if (active) Modifier.background(
-                            Brush.linearGradient(
-                                listOf(
-                                    colors.primary.copy(alpha = 0.64f),
-                                    colors.primaryContainer.copy(alpha = 0.76f),
-                                ),
-                            ),
-                            shape,
-                        ) else Modifier
-                    )
-                    .then(
-                        when {
-                            active -> Modifier.border(
-                                1.dp,
-                                colors.primary.copy(alpha = if (focused) 0.95f else 0.72f),
-                                shape,
-                            )
-                            ladder.focusBorder != null -> Modifier.border(tv.own.owntv.ui.theme.LocalFocusBorderWidth.current, ladder.focusBorder, shape)
-                            else -> Modifier
-                        }
-                    ),
+                modifier = Modifier.size(38.dp).clip(RoundedCornerShape(11.dp)).background(
+                    if (active) colors.primary else colors.surfaceContainerHigh.copy(alpha = 0.72f),
+                    RoundedCornerShape(11.dp),
+                ),
                 contentAlignment = Alignment.Center,
             ) {
-                // Monochrome duotone nav icon — tints via the shared ladder (muted idle, white cursor,
-                // accent when active). No per-frame animation on the always-visible nav.
-                NavDuotoneIcon(
-                    section = section,
-                    color = if (active) colors.onPrimaryContainer else ladder.icon,
-                    modifier = Modifier.size(24.dp),
-                )
+                NavDuotoneIcon(section = section, color = if (active) colors.onPrimary else ladder.icon, modifier = Modifier.size(21.dp))
             }
+            Text(
+                text = stringResource(section.labelRes),
+                style = MaterialTheme.typography.titleSmall,
+                color = if (active) colors.onSurface else colors.onSurfaceVariant,
+                fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+            if (count > 0) Text(text = count.toString(), style = MaterialTheme.typography.labelSmall, color = colors.onSurfaceVariant)
         }
     }
 }

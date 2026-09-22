@@ -309,6 +309,12 @@ fun ManageSourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.settings_sources_title), style = MaterialTheme.typography.headlineLarge, color = colors.onSurface)
                     Spacer(Modifier.weight(1f))
+                    val freeUkTvName = stringResource(R.string.free_uk_tv_name)
+                    OwnTVButton(
+                        stringResource(R.string.free_uk_tv_add),
+                        onClick = { vm.addFreeUkTv(freeUkTvName) },
+                        icon = tv.own.owntv.ui.components.OwnTVIcon.NETWORK,
+                    )
                     OwnTVButton(stringResource(R.string.settings_sources_add), onClick = { showAdd = true }, icon = tv.own.owntv.ui.components.OwnTVIcon.ADD, modifier = Modifier.focusRequester(addFocus))
                 }
                 Spacer(Modifier.height(8.dp))

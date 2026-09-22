@@ -156,6 +156,7 @@ fun LiveScreen(
     val searchQuery by vm.searchQuery.collectAsStateWithLifecycle()
     val sortMode by vm.sortMode.collectAsStateWithLifecycle()
     val livePreviewSetting by vm.livePreviewEnabled.collectAsStateWithLifecycle()
+    val ukTvLicenseRequired by vm.ukTvLicenseRequired.collectAsStateWithLifecycle()
     val channels = vm.channels.collectAsLazyPagingItems()
     val moveState by vm.moveState.collectAsStateWithLifecycle()
     val categoryMoveState by vm.categoryMoveState.collectAsStateWithLifecycle()
@@ -857,6 +858,13 @@ fun LiveScreen(
             onHide = { vm.hideCategory(item.key); contextCategory = null },
             onMove = { vm.enterCategoryMoveMode(item.key); contextCategory = null },
             onDismiss = { contextCategory = null }
+        )
+    }
+
+    ukTvLicenseRequired?.let { channel ->
+        FreeUkTvLicenseDialog(
+            onAccept = { vm.acceptUkTvLicense(channel) },
+            onDismiss = { vm.dismissUkTvLicense() },
         )
     }
 }

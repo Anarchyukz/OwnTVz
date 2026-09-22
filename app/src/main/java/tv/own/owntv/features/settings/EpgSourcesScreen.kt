@@ -436,6 +436,7 @@ internal fun EpgSourceForm(
     var autoRefresh by remember { mutableStateOf(initialAutoRefresh) }
     var useLogos by remember { mutableStateOf(initialUseLogos) }
     var showPlaylistPicker by remember { mutableStateOf(false) }
+    var showUkEpgPicker by remember { mutableStateOf(false) }
     var showAutoRefreshPicker by remember { mutableStateOf(false) }
     var showManualDays by remember { mutableStateOf(false) }
     val firstFocus = remember { FocusRequester() }
@@ -460,7 +461,21 @@ internal fun EpgSourceForm(
         val fillButtonFocus = remember { FocusRequester() }
         OwnTVTextField(url, { url = it }, label = stringResource(R.string.settings_epg_sources_url), placeholder = stringResource(R.string.settings_epg_sources_url_hint), modifier = Modifier.fillMaxWidth().widthIn(max = 680.dp).focusProperties { down = fillButtonFocus })
         Spacer(Modifier.height(8.dp))
-        OwnTVButton(stringResource(R.string.settings_epg_sources_fill_playlist), onClick = { dialogFocus.value = fillButtonFocus; showPlaylistPicker = true }, style = OwnTVButtonStyle.SECONDARY, icon = OwnTVIcon.PLAYLIST, modifier = Modifier.focusRequester(fillButtonFocus))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OwnTVButton(
+                stringResource(R.string.settings_epg_uk_presets),
+                onClick = { dialogFocus.value = fillButtonFocus; showUkEpgPicker = true },
+                style = OwnTVButtonStyle.SECONDARY,
+                icon = OwnTVIcon.NETWORK,
+            )
+            OwnTVButton(
+                stringResource(R.string.settings_epg_sources_fill_playlist),
+                onClick = { dialogFocus.value = fillButtonFocus; showPlaylistPicker = true },
+                style = OwnTVButtonStyle.SECONDARY,
+                icon = OwnTVIcon.PLAYLIST,
+                modifier = Modifier.focusRequester(fillButtonFocus),
+            )
+        }
         Spacer(Modifier.height(14.dp))
         OwnTVTextField(ua, { ua = it }, label = stringResource(R.string.settings_epg_sources_user_agent), placeholder = stringResource(R.string.settings_epg_sources_user_agent_hint), modifier = Modifier.fillMaxWidth().widthIn(max = 680.dp))
 
@@ -482,6 +497,16 @@ internal fun EpgSourceForm(
         }
     }
 
+    if (showUkEpgPicker) {
+        UkEpgPresetPicker(
+            onPick = { nameValue, urlValue ->
+                showUkEpgPicker = false
+                if (name.isBlank()) name = nameValue
+                url = urlValue
+            },
+            onDismiss = { showUkEpgPicker = false },
+        )
+    }
     if (showPlaylistPicker) {
         PlaylistEpgPicker(
             load = loadPlaylistOptions,
@@ -577,6 +602,59 @@ private fun EpgAutoRefreshRow(selected: EpgRefresh, modifier: Modifier = Modifie
                 style = MaterialTheme.typography.titleMedium,
                 color = colors.primary,
             )
+        }
+    }
+}
+
+@Composable
+private fun UkEpgPresetPicker(
+    onPick: (String, String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val colors = OwnTVTheme.colors
+    val presets = listOf(
+        stringResource(R.string.settings_epg_uk_preset_name, 1) to "https://raw.githubusercontent.com/RNIB-MediaAndCulture/Freeview-EPG_AD-filter/master/epg.xml",
+        stringResource(R.string.settings_epg_uk_preset_name, 2) to "https://raw.githubusercontent.com/farleyflex/epg-guide/main/epg.xml",
+        stringResource(R.string.settings_epg_uk_preset_name, 3) to "https://iptv-org.github.io/epg/guides/uk/sky.com.epg.xml",
+        stringResource(R.string.settings_epg_uk_preset_name, 4) to "https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz",
+        stringResource(R.string.settings_epg_uk_preset_name, 5) to "https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/UK_guide.xml.gz",
+    )
+    val firstFocus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { runCatching { firstFocus.requestFocus() } }
+    BackHandler { onDismiss() }
+
+    tv.own.owntv.ui.components.OwnTVPopup(onDismissRequest = onDismiss) {
+        Box(Modifier.fillMaxSize().modalScrim().trapAllFocusExit().focusGroup(), contentAlignment = Alignment.Center) {
+            Column(Modifier.dialogPanel(width = 560.dp, corner = 20.dp, padding = 24.dp, scroll = false)) {
+                Text(stringResource(R.string.settings_epg_uk_sources_title), style = MaterialTheme.typography.titleLarge, color = colors.onSurface)
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    stringResource(R.string.settings_epg_uk_sources_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(14.dp))
+                LazyColumn(Modifier.fillMaxWidth().height(280.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    itemsIndexed(presets) { index, (nameValue, urlValue) ->
+                        FocusableSurface(
+                            onClick = { onPick(nameValue, urlValue) },
+                            modifier = Modifier.fillMaxWidth().then(if (index == 0) Modifier.focusRequester(firstFocus) else Modifier),
+                            shape = RoundedCornerShape(12.dp),
+                            contentAlignment = Alignment.CenterStart,
+                            surface = GlassSurface.DIALOGS,
+                        ) { _ ->
+                            Column(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp)) {
+                                Text(nameValue, style = MaterialTheme.typography.titleMedium, color = colors.onSurface)
+                                Text(urlValue, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    OwnTVButton(stringResource(R.string.common_cancel), onClick = onDismiss, style = OwnTVButtonStyle.SECONDARY)
+                }
+            }
         }
     }
 }
