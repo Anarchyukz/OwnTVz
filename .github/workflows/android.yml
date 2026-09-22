@@ -8,7 +8,7 @@ name: Android CI
 #                unchanged); they only get the test/lint verdict.
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/native-vpn ]
     tags: [ "v*" ]
   pull_request:
     branches: [ main ]
