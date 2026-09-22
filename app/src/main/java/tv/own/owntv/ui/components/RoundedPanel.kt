@@ -28,15 +28,15 @@ import tv.own.owntv.ui.theme.glass
 // values are core's, because the mobile app paints the same three regions.
 val RailPanelFill: Color
     @Composable @ReadOnlyComposable get() =
-        Color(if (OwnTVTheme.colors.isDark) OwnTVPalette.DarkRailPanel else OwnTVPalette.LightRailPanel)
+        OwnTVTheme.colors.surfaceContainer
 
 val ContentPanelFill: Color
     @Composable @ReadOnlyComposable get() =
-        Color(if (OwnTVTheme.colors.isDark) OwnTVPalette.DarkContentPanel else OwnTVPalette.LightContentPanel)
+        OwnTVTheme.colors.surfaceContainerLow
 
 val PreviewPanelFill: Color
     @Composable @ReadOnlyComposable get() =
-        Color(if (OwnTVTheme.colors.isDark) OwnTVPalette.DarkPreviewPanel else OwnTVPalette.LightPreviewPanel)
+        OwnTVTheme.colors.surfaceContainerHigh
 
 /**
  * Phase 6 — a rounded visual container matching the new-shell mockup's "panel 2/3/4" look: large rounded
