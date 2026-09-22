@@ -463,7 +463,7 @@ internal fun EpgSourceForm(
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OwnTVButton(
-                "UK EPG presets",
+                stringResource(R.string.settings_epg_uk_presets),
                 onClick = { dialogFocus.value = fillButtonFocus; showUkEpgPicker = true },
                 style = OwnTVButtonStyle.SECONDARY,
                 icon = OwnTVIcon.NETWORK,
@@ -614,7 +614,7 @@ private fun UkEpgPresetPicker(
     val colors = OwnTVTheme.colors
     val presets = remember {
         (1..5).map { index ->
-            "UK EPG $index" to "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom$index.xml.gz"
+            stringResource(R.string.settings_epg_uk_preset_name, index) to "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom$index.xml.gz"
         }
     }
     val firstFocus = remember { FocusRequester() }
@@ -624,10 +624,10 @@ private fun UkEpgPresetPicker(
     tv.own.owntv.ui.components.OwnTVPopup(onDismissRequest = onDismiss) {
         Box(Modifier.fillMaxSize().modalScrim().trapAllFocusExit().focusGroup(), contentAlignment = Alignment.Center) {
             Column(Modifier.dialogPanel(width = 560.dp, corner = 20.dp, padding = 24.dp, scroll = false)) {
-                Text("United Kingdom EPG sources", style = MaterialTheme.typography.titleLarge, color = colors.onSurface)
+                Text(stringResource(R.string.settings_epg_uk_sources_title), style = MaterialTheme.typography.titleLarge, color = colors.onSurface)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Select a preconfigured XMLTV source. The app stores the remote URL rather than bundling the guide data.",
+                    stringResource(R.string.settings_epg_uk_sources_description),
                     style = MaterialTheme.typography.bodyMedium,
                     color = colors.onSurfaceVariant,
                 )
@@ -650,7 +650,7 @@ private fun UkEpgPresetPicker(
                 }
                 Spacer(Modifier.height(16.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    OwnTVButton("Cancel", onClick = onDismiss, style = OwnTVButtonStyle.SECONDARY)
+                    OwnTVButton(stringResource(R.string.common_cancel), onClick = onDismiss, style = OwnTVButtonStyle.SECONDARY)
                 }
             }
         }
