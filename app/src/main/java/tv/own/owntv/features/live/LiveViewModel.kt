@@ -2,6 +2,8 @@
 
 package tv.own.owntv.features.live
 
+import tv.own.owntv.R
+
 import tv.own.owntv.core.epg.displayLogoUrl
 import android.content.Context
 import android.util.Log
