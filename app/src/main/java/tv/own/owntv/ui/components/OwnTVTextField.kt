@@ -163,7 +163,16 @@ fun OwnTVTextField(
                     .weight(1f)
                     .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
                     .focusRequester(pillFocus)
-                    .clickable(interactionSource = interaction, indication = null) { editing = true },
+                    .focusable()
+                    .clickable(interactionSource = interaction, indication = null) { editing = true }
+                    .onPreviewKeyEvent {
+                        if (it.key == Key.DirectionCenter && it.type == KeyEventType.KeyUp) {
+                            editing = true
+                            true
+                        } else {
+                            false
+                        }
+                    },
             ) {
                 BasicTextField(
                     value = value,
