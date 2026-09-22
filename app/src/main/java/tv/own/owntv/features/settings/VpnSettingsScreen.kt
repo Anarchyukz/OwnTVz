@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.widthIn
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import kotlinx.coroutines.launch
 import tv.own.owntv.R
 import tv.own.owntv.ui.components.OwnTVButton
 import tv.own.owntv.ui.components.OwnTVButtonStyle
@@ -133,7 +134,7 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                 onClick = {
                     if (!busy && connected) {
                         busy = true
-                        kotlinx.coroutines.MainScope().launch {
+                        scope.launch {
                             val result = NativeVpnManager.disconnect()
                             busy = false
                             connected = result.isFailure.not()
