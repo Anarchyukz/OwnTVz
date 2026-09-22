@@ -19,6 +19,7 @@ env:
   GITHUB_ACTOR: ${{ github.actor }}
   GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
+# Standard debug APK for the current feature branch; push builds keep the downloadable artifact current.
 concurrency:
   group: build-apk-${{ github.ref }}
   cancel-in-progress: true
