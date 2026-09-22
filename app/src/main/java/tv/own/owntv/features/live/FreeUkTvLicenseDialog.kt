@@ -77,7 +77,7 @@ fun FreeUkTvLicenseDialog(
                     Spacer(Modifier.height(18.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OwnTVButton(
-                            stringResource(R.string.common_continue),
+                            stringResource(R.string.common_ok),
                             onClick = { if (checked) onAccept() },
                             style = if (checked) OwnTVButtonStyle.PRIMARY else OwnTVButtonStyle.SECONDARY,
                             modifier = Modifier.weight(1f).focusRequester(acceptFocus),
