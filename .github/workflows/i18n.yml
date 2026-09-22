@@ -2,8 +2,7 @@ name: i18n
 
 # Lightweight, deliberately SEPARATE from android.yml (which the repo restricts to main / v* tags).
 # Three jobs, all gating:
-#   baseline  — the hardcoded-literal ratchet against the pull-request merge base (not HEAD^, which
-#               is bypassable in a multi-commit PR).
+#   baseline  — the hardcoded-literal ratchet against the current pull-request base branch tip.
 #   validate  — the Kotlin-side checks: locale-stable number formatting and bounded text overflow.
 #               The strings themselves live in the core repository now, so locales.json schema,
 #               placeholder/plural parity, translation coverage and the toolkit's own regression
@@ -11,9 +10,9 @@ name: i18n
 #   pseudo    — inspects the BUILT debug and release APKs and proves pseudolocales survived
 #               localeFilters in debug and are absent in release. The flag being set is not proof.
 #
-# Why merge base and not HEAD^: a baseline can grow in commit 2 and stay untouched in the final
-# commit, so the final commit's diff against its parent passes while the PR as a whole regressed.
-# The required invariant is: PR-head baseline ⊆ pull-request merge-base baseline.
+# The baseline is compared with the current base branch tip rather than HEAD^ or an old merge base.
+# This keeps the PR ratchet aligned with the policy currently enforced on main, including scanner
+# migrations that have already landed there.
 #
 # Why main is also a trigger: work lands on main by direct push, not only by PR. A pull_request-only
 # workflow never inspects those commits, so unclassified literals accumulate on main unseen and the
@@ -41,9 +40,6 @@ on:
 permissions:
   contents: read
 
-# The pseudo job assembles APKs, so it resolves core from the GitHub Packages registry of
-# ahXN00/OwnTV_Core — see the note in android.yml, including what happens on a fork pull request,
-# where this secret is empty.
 env:
   GITHUB_ACTOR: ${{ github.actor }}
   GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
@@ -79,7 +75,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$EVENT_NAME" = "pull_request" ]; then
-            BASE_SHA="$(git merge-base HEAD "origin/${GITHUB_BASE_REF}")"
+            BASE_SHA="$(git rev-parse "origin/${GITHUB_BASE_REF}")"
             python3 tools/i18n/check_hardcoded_strings.py verify-ci --base-sha "$BASE_SHA"
           else
             python3 tools/i18n/check_hardcoded_strings.py verify --bootstrap
@@ -99,9 +95,6 @@ jobs:
         run: python3 tools/i18n/check_text_overflow.py
 
   pseudo:
-    # Builds the debug + release standard APKs and inspects their resource tables. Heavier than the
-    # other two jobs, so it is its own job rather than piggy-backed on android.yml — and skipped on
-    # push, where android.yml already assembles main.
     if: ${{ github.event_name != 'push' && !(github.event_name == 'pull_request' && startsWith(github.head_ref, 'bump/core-')) }}
     runs-on: ubuntu-latest
     steps:
@@ -114,8 +107,6 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
-          # 'tools' is obsolete and Google removed it from the SDK repository; the
-          # action still asks for it by default, which fails the whole setup step.
           packages: 'platform-tools'
       - name: Resolve core
         uses: ./.github/actions/resolve-core
