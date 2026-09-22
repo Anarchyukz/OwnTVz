@@ -311,7 +311,7 @@ fun ManageSourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                     Spacer(Modifier.weight(1f))
                     OwnTVButton(
                         stringResource(R.string.free_uk_tv_add),
-                        onClick = { vm.addFreeUkTv(stringResource(R.string.free_uk_tv_name)) },
+                        onClick = { vm.addFreeUkTv(freeUkTvName) },
                         icon = tv.own.owntv.ui.components.OwnTVIcon.NETWORK,
                     )\n                    OwnTVButton(stringResource(R.string.settings_sources_add), onClick = { showAdd = true }, icon = tv.own.owntv.ui.components.OwnTVIcon.ADD, modifier = Modifier.focusRequester(addFocus))
                 }
