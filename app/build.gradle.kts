@@ -403,6 +403,8 @@ dependencies {
     // Networking
     implementation(libs.okhttp)
     implementation(libs.zxing.core) // QR generation for the Remote (companion) add-source flow
+    // Official embeddable WireGuard Android tunnel backend (Apache-2.0).
+    implementation(libs.wireguard.tunnel)
     implementation(libs.juniversalchardet) // local subtitle charset detection (subtitle plan §7.2)
 
     // Media playback — libmpv (FFmpeg) engine
