@@ -37,40 +37,17 @@ import tv.own.owntv.ui.components.OwnTVIcon
 import tv.own.owntv.ui.components.roundedPanel
 import tv.own.owntv.ui.theme.OwnTVTheme
 
-private val vpnProviders = listOf(
-    "Custom WireGuard",
-    "NordVPN",
-    "Surfshark",
-    "ExpressVPN",
-    "Proton VPN",
-    "IPVanish",
-    "CyberGhost",
-    "Private Internet Access",
-    "Mullvad",
-    "Windscribe",
-    "hide.me",
-    "PureVPN",
-    "AirVPN",
-    "IVPN",
-)
-
 @Composable
 fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val colors = OwnTVTheme.colors
-
-    var provider by remember { mutableStateOf("Custom WireGuard") }
+    val providers = context.resources.getStringArray(R.array.settings_vpn_providers)
+    var provider by remember { mutableStateOf(context.getString(R.string.settings_vpn_provider_custom_wireguard)) }
     var config by remember { mutableStateOf("") }
     var connected by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf<String?>(null) }
     var showProviders by remember { mutableStateOf(false) }
-
-    fun refreshState() {
-        kotlinx.coroutines.MainScope().launch {
-            connected = NativeVpnManager.isConnected()
-        }
-    }
 
     fun connectNow() {
         busy = true
@@ -126,7 +103,6 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     ) {
         Header(stringResource(R.string.settings_vpn_title), onBack)
         Spacer(Modifier.height(8.dp))
-
         GroupLabel(stringResource(R.string.settings_vpn_provider))
         Row2(
             icon = OwnTVIcon.NETWORK,
@@ -136,37 +112,22 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
             primaryChip = false,
             onClick = { showProviders = true },
         )
-
         Spacer(Modifier.height(12.dp))
         GroupLabel(stringResource(R.string.settings_vpn_configuration))
         Row2(
             icon = OwnTVIcon.NETWORK,
             title = stringResource(R.string.settings_vpn_import),
-            desc = if (config.isBlank()) {
-                stringResource(R.string.settings_vpn_no_config)
-            } else {
-                stringResource(R.string.settings_vpn_config_ready)
-            },
+            desc = if (config.isBlank()) stringResource(R.string.settings_vpn_no_config) else stringResource(R.string.settings_vpn_config_ready),
             chip = stringResource(R.string.settings_vpn_choose_file),
             primaryChip = !config.isBlank(),
-            onClick = {
-                configPicker.launch(arrayOf("text/plain", "application/octet-stream"))
-            },
+            onClick = { configPicker.launch(arrayOf("text/plain", "application/octet-stream")) },
         )
-
         Spacer(Modifier.height(16.dp))
-        Text(
-            stringResource(R.string.settings_vpn_provider_note),
-            style = MaterialTheme.typography.bodyMedium,
-            color = colors.onSurfaceVariant,
-        )
-
+        Text(stringResource(R.string.settings_vpn_provider_note), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
         Spacer(Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             OwnTVButton(
-                label = if (busy) stringResource(R.string.settings_vpn_working)
-                else if (connected) stringResource(R.string.settings_vpn_disconnect)
-                else stringResource(R.string.settings_vpn_connect),
+                label = if (busy) stringResource(R.string.settings_vpn_working) else if (connected) stringResource(R.string.settings_vpn_disconnect) else stringResource(R.string.settings_vpn_connect),
                 onClick = {
                     if (!busy && connected) {
                         busy = true
@@ -174,8 +135,7 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                             val result = NativeVpnManager.disconnect()
                             busy = false
                             connected = result.isFailure.not()
-                            message = result.exceptionOrNull()?.message
-                                ?: context.getString(R.string.settings_vpn_disconnected)
+                            message = result.exceptionOrNull()?.message ?: context.getString(R.string.settings_vpn_disconnected)
                         }
                     } else if (!busy) {
                         if (config.isBlank()) {
@@ -189,26 +149,14 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                 style = if (connected) OwnTVButtonStyle.SECONDARY else OwnTVButtonStyle.PRIMARY,
             )
         }
-
         Spacer(Modifier.height(12.dp))
-        Text(
-            if (connected) stringResource(R.string.settings_vpn_status_connected)
-            else stringResource(R.string.settings_vpn_status_disconnected),
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (connected) colors.primary else colors.onSurfaceVariant,
-        )
-
+        Text(if (connected) stringResource(R.string.settings_vpn_status_connected) else stringResource(R.string.settings_vpn_status_disconnected), style = MaterialTheme.typography.bodyMedium, color = if (connected) colors.primary else colors.onSurfaceVariant)
         message?.let {
             Spacer(Modifier.height(6.dp))
             Text(it, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         }
-
         Spacer(Modifier.height(12.dp))
-        Text(
-            stringResource(R.string.settings_vpn_privacy),
-            style = MaterialTheme.typography.bodySmall,
-            color = colors.onSurfaceVariant,
-        )
+        Text(stringResource(R.string.settings_vpn_privacy), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
     }
 
     if (showProviders) {
@@ -216,18 +164,10 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
             onDismissRequest = { showProviders = false },
             fontScale = .50f,
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .widthIn(min = 420.dp),
-            ) {
-                Text(
-                    stringResource(R.string.settings_vpn_provider),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = colors.onSurface,
-                )
+            Column(modifier = Modifier.padding(24.dp).widthIn(min = 420.dp)) {
+                Text(stringResource(R.string.settings_vpn_provider), style = MaterialTheme.typography.titleLarge, color = colors.onSurface)
                 Spacer(Modifier.height(12.dp))
-                vpnProviders.forEach { item ->
+                providers.forEach { item ->
                     Row2(
                         icon = OwnTVIcon.NETWORK,
                         title = item,
