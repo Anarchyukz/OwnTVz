@@ -22,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import tv.own.owntv.R
 import tv.own.owntv.ui.components.OwnTVButton
 import tv.own.owntv.ui.components.OwnTVButtonStyle
 import tv.own.owntv.ui.components.dialogPanel
@@ -55,19 +57,19 @@ fun FreeUkTvLicenseDialog(
                     Modifier.dialogPanel(width = 560.dp, corner = 18.dp, padding = 24.dp),
                 ) {
                     Text(
-                        "TV Licence required",
+                        stringResource(R.string.free_uk_tv_licence_required),
                         style = MaterialTheme.typography.headlineSmall,
                         color = colors.onSurface,
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        "UK law requires you to be covered by a valid TV Licence when watching live TV on any channel or streaming service. OwnTVz cannot check whether you have a licence.",
+                        stringResource(R.string.free_uk_tv_licence_description),
                         style = MaterialTheme.typography.bodyMedium,
                         color = colors.onSurfaceVariant,
                     )
                     Spacer(Modifier.height(18.dp))
                     OwnTVButton(
-                        label = if (checked) "☑  I confirm that I am covered by a valid TV Licence" else "☐  I confirm that I am covered by a valid TV Licence",
+                        label = stringResource(if (checked) R.string.free_uk_tv_licence_checked else R.string.free_uk_tv_licence_unchecked),
                         onClick = { checked = !checked },
                         style = if (checked) OwnTVButtonStyle.PRIMARY else OwnTVButtonStyle.SECONDARY,
                         modifier = Modifier.fillMaxWidth().focusRequester(checkFocus),
@@ -75,13 +77,13 @@ fun FreeUkTvLicenseDialog(
                     Spacer(Modifier.height(18.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OwnTVButton(
-                            "Continue",
+                            stringResource(R.string.common_continue),
                             onClick = { if (checked) onAccept() },
                             style = if (checked) OwnTVButtonStyle.PRIMARY else OwnTVButtonStyle.SECONDARY,
                             modifier = Modifier.weight(1f).focusRequester(acceptFocus),
                         )
                         OwnTVButton(
-                            "Cancel",
+                            stringResource(R.string.common_cancel),
                             onClick = onDismiss,
                             style = OwnTVButtonStyle.SECONDARY,
                             modifier = Modifier.weight(1f),
