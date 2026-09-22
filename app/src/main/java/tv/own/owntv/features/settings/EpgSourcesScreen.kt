@@ -466,7 +466,7 @@ internal fun EpgSourceForm(
                 "UK EPG presets",
                 onClick = { dialogFocus.value = fillButtonFocus; showUkEpgPicker = true },
                 style = OwnTVButtonStyle.SECONDARY,
-                icon = OwnTVIcon.GLOBE,
+                icon = OwnTVIcon.NETWORK,
             )
             OwnTVButton(
                 stringResource(R.string.settings_epg_sources_fill_playlist),
