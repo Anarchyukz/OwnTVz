@@ -133,7 +133,7 @@ fun Sidebar(
             .padding(start = 10.dp, top = topInset, end = 8.dp, bottom = 8.dp)
             .roundedPanel(fillColor = RailPanelFill, surface = GlassSurface.SIDEBAR)
             // Keep the plate aligned while lowering the logo slightly inside it.
-            .padding(horizontal = 8.dp, top = 16.dp, bottom = 16.dp),
+            .padding(start = 8.dp, top = 16.dp, end = 8.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Phase 2 — brand mark pinned at the top of the rail. Non-focusable, so D-pad entry into the
