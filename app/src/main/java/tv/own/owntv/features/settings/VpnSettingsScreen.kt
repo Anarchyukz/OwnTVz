@@ -3,6 +3,7 @@ package tv.own.owntv.features.settings
 import android.app.Activity
 import android.content.Intent
 import android.net.VpnService
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,6 +54,8 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val configLoadedMessage = stringResource(R.string.settings_vpn_config_loaded)
     val disconnectedMessage = stringResource(R.string.settings_vpn_disconnected)
     val noConfigMessage = stringResource(R.string.settings_vpn_no_config)
+    val windscribeProvider = stringResource(R.string.settings_vpn_provider_windscribe)
+    val windscribeGeneratorUrl = stringResource(R.string.settings_vpn_windscribe_generator_url)
     var provider by remember { mutableStateOf(customProvider) }
     var config by remember { mutableStateOf("") }
     var connected by remember { mutableStateOf(false) }
@@ -134,7 +137,19 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
             onClick = { configPicker.launch(arrayOf("text/plain", "application/octet-stream")) },
         )
         Spacer(Modifier.height(16.dp))
-        Text(stringResource(R.string.settings_vpn_provider_note), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+        if (provider == windscribeProvider) {
+            Text(stringResource(R.string.settings_vpn_windscribe_note), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+            Spacer(Modifier.height(8.dp))
+            OwnTVButton(
+                label = stringResource(R.string.settings_vpn_windscribe_generate),
+                onClick = {
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(windscribeGeneratorUrl)))
+                },
+                style = OwnTVButtonStyle.SECONDARY,
+            )
+        } else {
+            Text(stringResource(R.string.settings_vpn_provider_note), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+        }
         Spacer(Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             OwnTVButton(
