@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.widthIn
@@ -44,8 +45,15 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val colors = OwnTVTheme.colors
-    val providers = context.resources.getStringArray(R.array.settings_vpn_providers)
-    var provider by remember { mutableStateOf(context.getString(R.string.settings_vpn_provider_custom_wireguard)) }
+    val providers = stringArrayResource(R.array.settings_vpn_providers)
+    val customProvider = stringResource(R.string.settings_vpn_provider_custom_wireguard)
+    val connectedMessage = stringResource(R.string.settings_vpn_connected)
+    val failedMessage = stringResource(R.string.settings_vpn_failed)
+    val readFailedMessage = stringResource(R.string.settings_vpn_read_failed)
+    val configLoadedMessage = stringResource(R.string.settings_vpn_config_loaded)
+    val disconnectedMessage = stringResource(R.string.settings_vpn_disconnected)
+    val noConfigMessage = stringResource(R.string.settings_vpn_no_config)
+    var provider by remember { mutableStateOf(customProvider) }
     var config by remember { mutableStateOf("") }
     var connected by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
@@ -60,7 +68,7 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
             busy = false
             connected = result.isSuccess
             message = result.exceptionOrNull()?.message
-                ?: if (result.isSuccess) context.getString(R.string.settings_vpn_connected) else context.getString(R.string.settings_vpn_failed)
+                ?: if (result.isSuccess) connectedMessage else failedMessage
         }
     }
 
@@ -76,11 +84,11 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
         if (uri == null) return@rememberLauncherForActivityResult
         runCatching {
             context.contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-                ?: error(context.getString(R.string.settings_vpn_read_failed))
+                ?: error(readFailedMessage)
         }.onSuccess {
             config = it
             NativeVpnManager.saveConfig(provider, it)
-            message = context.getString(R.string.settings_vpn_config_loaded)
+            message = configLoadedMessage
         }.onFailure {
             message = it.message
         }
@@ -138,11 +146,11 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
                             val result = NativeVpnManager.disconnect()
                             busy = false
                             connected = result.isFailure.not()
-                            message = result.exceptionOrNull()?.message ?: context.getString(R.string.settings_vpn_disconnected)
+                            message = result.exceptionOrNull()?.message ?: disconnectedMessage
                         }
                     } else if (!busy) {
                         if (config.isBlank()) {
-                            message = context.getString(R.string.settings_vpn_no_config)
+                            message = noConfigMessage
                         } else {
                             val intent: Intent? = VpnService.prepare(context)
                             if (intent == null) connectNow() else vpnPermissionLauncher.launch(intent)
