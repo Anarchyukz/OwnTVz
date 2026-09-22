@@ -1172,6 +1172,10 @@ class SettingsViewModel(
         importer.m3u(name, url, userAgent, epgUrl, autoRefresh, makeDefault = isDefault)
     }
 
+    fun addFreeUkTv(name: String) {
+        addM3u(name = name, url = tv.own.owntv.features.live.FreeUkTv.PLAYLIST_URL, autoRefresh = PlaylistRefresh.OFF)
+    }
+
     /**
      * Drive one of core's add-a-playlist calls, then do the two things that are this app's business
      * and not core's: refresh the Android TV launcher rows, and offer a one-tap guide sync when the
