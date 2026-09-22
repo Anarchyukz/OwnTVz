@@ -615,11 +615,11 @@ private fun UkEpgPresetPicker(
     // Prefer maintained guides with stable channel IDs so the automatic matcher has a
     // much better chance of linking the downloaded programmes to the playlist.
     val presets = listOf(
-        stringResource(R.string.settings_epg_uk_preset_name, 1) to "https://iptv-org.github.io/epg/guides/uk/sky.com.epg.xml",
-        stringResource(R.string.settings_epg_uk_preset_name, 2) to "https://iptv-org.github.io/epg/guides/uk/ontvtonight.com.epg.xml",
-        stringResource(R.string.settings_epg_uk_preset_name, 3) to "https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz",
-        stringResource(R.string.settings_epg_uk_preset_name, 4) to "https://raw.githubusercontent.com/RNIB-MediaAndCulture/Freeview-EPG_AD-filter/master/epg.xml",
-        stringResource(R.string.settings_epg_uk_preset_name, 5) to "https://raw.githubusercontent.com/farleyflex/epg-guide/main/epg.xml",
+        stringResource(R.string.settings_epg_uk_preset_name, 1) to stringResource(R.string.settings_epg_uk_preset_url_1),
+        stringResource(R.string.settings_epg_uk_preset_name, 2) to stringResource(R.string.settings_epg_uk_preset_url_2),
+        stringResource(R.string.settings_epg_uk_preset_name, 3) to stringResource(R.string.settings_epg_uk_preset_url_3),
+        stringResource(R.string.settings_epg_uk_preset_name, 4) to stringResource(R.string.settings_epg_uk_preset_url_4),
+        stringResource(R.string.settings_epg_uk_preset_name, 5) to stringResource(R.string.settings_epg_uk_preset_url_5),
     )
     val firstFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) { runCatching { firstFocus.requestFocus() } }
