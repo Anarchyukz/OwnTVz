@@ -1117,4 +1117,3 @@
 1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://iptv-org.github.io/epg/guides/uk/sky.com.epg.xml
 1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz
 1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://raw.githubusercontent.com/acidjesuz/EPGTalk/master/UK_guide.xml.gz
-3	empty	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	\\0
