@@ -1,6 +1,9 @@
 name: Build APK
 
 on:
+  push:
+    branches:
+      - feature/native-vpn
   workflow_dispatch:
     inputs:
       force_core_source:
@@ -8,9 +11,6 @@ on:
         type: boolean
         required: false
         default: false
-  push:
-    branches:
-      - feature/native-vpn
 
 permissions:
   contents: read
