@@ -1476,7 +1476,7 @@ class LiveViewModel(
     private suspend fun playChannel(channel: ChannelEntity) {
         val pid = currentProfileId() ?: return
         val source = getSource(channel.sourceId)
-        if (source?.name == FreeUkTv.SOURCE_NAME && !FreeUkTv.isAcknowledged(appContext)) {
+        if (source?.name == appContext.getString(R.string.free_uk_tv_name) && !FreeUkTv.isAcknowledged(appContext)) {
             _ukTvLicenseRequired.value = channel
             return
         }
