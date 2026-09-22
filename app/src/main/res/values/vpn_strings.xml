@@ -21,6 +21,7 @@
     <string name="settings_vpn_status_connected">Status: Connected</string>
     <string name="settings_vpn_status_disconnected">Status: Disconnected</string>
     <string name="settings_vpn_privacy">When a full-tunnel WireGuard configuration contains 0.0.0.0/0 and/or ::/0 in AllowedIPs, Android routes the device traffic through the VPN. The provider configuration controls the actual routes and DNS.</string>
+    <string name="free_uk_tv_add">🇬🇧 Add Free UK TV</string>
     <string name="free_uk_tv_name">🇬🇧 Free UK TV</string>
     <string name="free_uk_tv_licence_required">TV Licence required</string>
     <string name="free_uk_tv_licence_description">UK law requires you to be covered by a valid TV Licence when watching live TV on any channel or streaming service. OwnTVz cannot check whether you have a licence.</string>
