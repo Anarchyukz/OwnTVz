@@ -612,11 +612,9 @@ private fun UkEpgPresetPicker(
     onDismiss: () -> Unit,
 ) {
     val colors = OwnTVTheme.colors
-    val presets = remember {
-        (1..5).map { index ->
+    val presets = (1..5).map { index ->
             stringResource(R.string.settings_epg_uk_preset_name, index) to "https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom$index.xml.gz"
         }
-    }
     val firstFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) { runCatching { firstFocus.requestFocus() } }
     BackHandler { onDismiss() }
