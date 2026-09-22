@@ -1104,4 +1104,4 @@
 1	url	app/src/main/java/tv/own/owntv/features/live/FreeUkTv.kt	https://raw.githubusercontent.com/Anarchyukz/OwnTVz/24ea038e735e5f8e76dc9f970d04e46697f57cfe/app/src/main/assets/free_uk_tv.m3u
 1	preference-key	app/src/main/java/tv/own/owntv/features/live/FreeUkTv.kt	uk_live_tv_licence_acknowledged
 1	technical	app/src/main/java/tv/own/owntv/features/live/FreeUkTv.kt	owntv_legal
-
+1	url	app/src/main/java/tv/own/owntv/features/settings/EpgSourcesScreen.kt	https://raw.githubusercontent.com/globetvapp/epg/main/Unitedkingdom/unitedkingdom$index.xml.gz
