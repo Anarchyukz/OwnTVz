@@ -31,6 +31,9 @@
     <string name="settings_vpn_provider_pia">Private Internet Access</string>
     <string name="settings_vpn_provider_mullvad">Mullvad</string>
     <string name="settings_vpn_provider_windscribe">Windscribe</string>
+    <string name="settings_vpn_windscribe_generator_url">https://windscribe.com/getconfig/wireguard</string>
+    <string name="settings_vpn_windscribe_note">Generate a WireGuard .conf from Windscribe, then import it above. Windscribe config generation requires a paid account.</string>
+    <string name="settings_vpn_windscribe_generate">Open Windscribe WireGuard generator</string>
     <string name="settings_vpn_provider_hideme">hide.me</string>
     <string name="settings_vpn_provider_purevpn">PureVPN</string>
     <string name="settings_vpn_provider_airvpn">AirVPN</string>
