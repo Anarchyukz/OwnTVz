@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +41,7 @@ import tv.own.owntv.ui.theme.OwnTVTheme
 @Composable
 fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val colors = OwnTVTheme.colors
     val providers = context.resources.getStringArray(R.array.settings_vpn_providers)
     var provider by remember { mutableStateOf(context.getString(R.string.settings_vpn_provider_custom_wireguard)) }
@@ -52,7 +54,7 @@ fun VpnSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
     fun connectNow() {
         busy = true
         message = null
-        kotlinx.coroutines.MainScope().launch {
+        scope.launch {
             val result = NativeVpnManager.connect(config)
             busy = false
             connected = result.isSuccess
