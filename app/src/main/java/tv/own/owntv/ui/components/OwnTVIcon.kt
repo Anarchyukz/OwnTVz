@@ -37,7 +37,7 @@ enum class OwnTVIcon {
     // Local sync: the other device in the house, and the direction data leaves in. Before these, an
     // archive box stood for a paired phone, for "let this one be found", and for "send to it" — three
     // meanings on one screen, and all three already meant "backup" everywhere else in the app.
-    PHONE, SEND,
+    PHONE, SEND, MICROPHONE,
 }
 
 @Composable
@@ -94,6 +94,12 @@ fun OwnTVIcon(
             OwnTVIcon.SEARCH -> {
                 drawCircleStroke(p(10.5f, 10.5f), 6.5f * s, tint, stroke)
                 drawLineStroke(p(15.5f, 15.5f), p(20f, 20f), tint, stroke)
+            }
+            OwnTVIcon.MICROPHONE -> {
+                drawRoundRectStroke(p(8f, 3f), p(16f, 15f), 4f * s, tint, stroke)
+                drawArc(tint, 0f, 180f, false, p(5f, 8f), Size(14f * s, 11f * s), style = stroke)
+                drawLineStroke(p(12f, 19f), p(12f, 15f), tint, stroke)
+                drawLineStroke(p(8f, 19f), p(16f, 19f), tint, stroke)
             }
             OwnTVIcon.HOME -> {
                 val roof = Path().apply {
