@@ -91,6 +91,7 @@ fun ManageSourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier, start
     val defaultPortalName = stringResource(R.string.setup_default_portal)
 
     var showAdd by remember { mutableStateOf(false) }
+    LaunchedEffect(startOnAdd) { if (startOnAdd) showAdd = true }
     // Within "Add source": null = the Remote|Manual chooser, else the chosen path.
     var addMode by remember { mutableStateOf<AddMode?>(null) }
     var editingSource by remember { mutableStateOf<SourceEntity?>(null) }
