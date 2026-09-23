@@ -615,11 +615,7 @@ private fun UkEpgPresetPicker(
     // Prefer maintained guides with stable channel IDs so the automatic matcher has a
     // much better chance of linking the downloaded programmes to the playlist.
     val presets = listOf(
-        stringResource(R.string.settings_epg_uk_preset_name, 1) to stringResource(R.string.settings_epg_uk_preset_url_1),
-        stringResource(R.string.settings_epg_uk_preset_name, 2) to stringResource(R.string.settings_epg_uk_preset_url_2),
-        stringResource(R.string.settings_epg_uk_preset_name, 3) to stringResource(R.string.settings_epg_uk_preset_url_3),
-        stringResource(R.string.settings_epg_uk_preset_name, 4) to stringResource(R.string.settings_epg_uk_preset_url_4),
-        stringResource(R.string.settings_epg_uk_preset_name, 5) to stringResource(R.string.settings_epg_uk_preset_url_5),
+        stringResource(R.string.settings_epg_uk_preset_name, 1) to stringResource(R.string.settings_epg_uk_preset_url_3),
     )
     val firstFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) { runCatching { firstFocus.requestFocus() } }
