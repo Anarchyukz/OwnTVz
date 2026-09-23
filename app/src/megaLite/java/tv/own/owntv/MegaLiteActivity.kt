@@ -52,7 +52,7 @@ class MegaLiteActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MegaLiteHome(onOpenFullApp: () -> Unit) {
+private fun MegaLiteHome(onOpenFullApp: (String) -> Unit) {
     val items = listOf(
         MegaLiteItem("TV GUIDE", "▦"),
         MegaLiteItem("SERIES", "▶"),
@@ -106,7 +106,7 @@ private fun MegaLiteHome(onOpenFullApp: () -> Unit) {
                         focused = focusedIndex == index,
                         modifier = Modifier.weight(1f),
                         onFocused = { focusedIndex = index },
-                        onSelected = onOpenFullApp,
+                        onSelected = { onOpenFullApp(item.title) },
                     )
                 }
             }
