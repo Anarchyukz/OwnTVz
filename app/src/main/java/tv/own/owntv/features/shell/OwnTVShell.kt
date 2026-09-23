@@ -169,7 +169,7 @@ fun OwnTVShell(
     var showPlaylistPicker by remember { mutableStateOf(false) }
     var playerMode by remember { mutableStateOf(PlayerMode.NONE) }
     // Deep-link: the Guide's "Add EPG" button switches to Settings and opens EPG Sources → add.
-    var openEpgAdd by remember { mutableStateOf(false) }
+    var openEpgAdd by remember { mutableStateOf(false) }\n    var openPlaylistAdd by remember { mutableStateOf(false) }
     // One-shot: set when leaving the player so the returning browse screen re-focuses the item you played.
     var restoreFocus by remember { mutableStateOf(false) }
     var restoreTrendingSearchFocus by remember { mutableStateOf(false) }
@@ -1004,7 +1004,7 @@ fun OwnTVShell(
                             onSetZoom = onSetZoom,
                             fontCustomization = fontCustomization,
                             onSetFontCustomization = onSetFontCustomization,
-                            onOpenPlaylist = { /* Phase 6: open setup/playlist */ },
+                            onOpenPlaylist = { openPlaylistAdd = true },
                             // Settings is reached through More now, so Back out of its root goes
                             // back there rather than to the rail — one level out, not two.
                             onBack = { onSelectSection(MainSection.MORE) },
