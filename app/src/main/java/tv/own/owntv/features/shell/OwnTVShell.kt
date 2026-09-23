@@ -1011,6 +1011,8 @@ fun OwnTVShell(
                             onBack = { onSelectSection(MainSection.MORE) },
                             openEpgAdd = openEpgAdd,
                             onEpgAddConsumed = { openEpgAdd = false },
+                            openPlaylistAdd = openPlaylistAdd,
+                            onPlaylistAddConsumed = { openPlaylistAdd = false },
                             modifier = Modifier
                                 .fillMaxSize()
                                 .onFocusChanged { if (it.hasFocus) focusedLayer = ShellLayer.CONTENT }
