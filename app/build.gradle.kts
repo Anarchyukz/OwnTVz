@@ -153,6 +153,16 @@ android {
     }
 
     buildTypes {
+        // Mega Lite is deliberately a separate build type/source set. The normal debug/release
+        // variants and their source code remain unchanged. It is a standalone MAG-style shell
+        // for testing a lean set-top-box experience.
+        create("megaLite") {
+            initWith(getByName("debug"))
+            matchingFallbacks += listOf("debug")
+            applicationIdSuffix = ".megalite"
+            versionNameSuffix = "-mega-lite"
+        }
+
         debug {
             // Pseudolocales (en-XA / ar-XB) are generated for the debug BuildType, NOT androidResources.
             // They are the Phase 3g QA sweep instrument; localeFilters below would otherwise strip them,
