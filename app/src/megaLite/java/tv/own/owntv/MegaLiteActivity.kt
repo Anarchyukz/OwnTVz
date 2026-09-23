@@ -45,7 +45,7 @@ class MegaLiteActivity : ComponentActivity() {
             MegaLiteHome(
                 onOpenFullApp = { destination ->
                     val intent = Intent(this, MainActivity::class.java).apply {
-                        putExtra("owntv.mega_lite_destination", when (destination) {
+                        putExtra(EXTRA_MEGA_LITE_DESTINATION, when (destination) {
                             "TV GUIDE" -> "guide"
                             "SERIES" -> "series"
                             "MOVIES" -> "movies"
