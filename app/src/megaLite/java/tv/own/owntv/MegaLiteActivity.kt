@@ -291,7 +291,7 @@ private fun MegaEpgScreen(onHome: () -> Unit) {
         onBack = onHome,
         onFullscreen = {},
         onPlayChannel = { channel, _ ->
-            scope.launch { liveVm.ensurePlayingByIdAsync(channel.id, false) }
+            scope.launch { liveVm.ensurePlayingByIdAsync(channel.id) }
         },
         onPlayCatchup = { channel, programme ->
             liveVm.playCatchupProgramme(channel, programme)
