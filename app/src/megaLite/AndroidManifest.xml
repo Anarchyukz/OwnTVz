@@ -5,9 +5,7 @@
     <!-- Replace only the launcher activity for the Mega Lite build type.
          MainActivity and the normal manifest remain untouched. -->
     <application>
-        <activity
-            android:name=".MainActivity"
-            tools:node="remove" />
+        <!-- MainActivity is still required as the destination launched by Mega Lite cards. -->
 
         <activity
             android:name=".MegaLiteActivity"
