@@ -1112,3 +1112,9 @@
 1	empty	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	\0
 1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	application/octet-stream
 1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	text/plain
+
+5	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	guide
+5	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	series
+5	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	movies
+1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onCreate megaLite=${megaLiteDestination ?: "none"}
+1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onNewIntent megaLite=${megaLiteDestination ?: "none"}
