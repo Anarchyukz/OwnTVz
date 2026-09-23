@@ -215,7 +215,7 @@ fun SettingsScreen(
     // instead of dropping back to the Settings root/sidebar.
     var tab by rememberSaveable { mutableStateOf(SettingsTab.ROOT) }
     // Deep-link from the Guide's "Add EPG" button: jump straight to EPG Sources in add mode.
-    var consumeEpgAdd by remember { mutableStateOf(false) }
+    var consumeEpgAdd by remember { mutableStateOf(false) }\n    var consumePlaylistAdd by remember { mutableStateOf(false) }
     var showZoom by remember { mutableStateOf(false) }
     var showPopupSize by remember { mutableStateOf(false) }
     var showFontCustomization by remember { mutableStateOf(false) }
@@ -397,12 +397,12 @@ fun SettingsScreen(
     // from it would aim at the shortcut instead of the row just used.
     val open: (SettingsTab) -> Unit = { lastTab = it; deepReturnKey = null; videoSection = null; videoRowKey = null; tab = it }
     LaunchedEffect(openEpgAdd) {
-        if (openEpgAdd) { consumeEpgAdd = true; open(SettingsTab.EPG); onEpgAddConsumed() }
+        if (openEpgAdd) { consumeEpgAdd = true; open(SettingsTab.EPG); onEpgAddConsumed() }\n        if (openPlaylistAdd) { consumePlaylistAdd = true; open(SettingsTab.SOURCES); onPlaylistAddConsumed() }
     }
 
     when (tab) {
         SettingsTab.LANGUAGE -> { LanguageSettingsScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier); return }
-        SettingsTab.SOURCES -> { ManageSourcesScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier); return }
+        SettingsTab.SOURCES -> { ManageSourcesScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier, startOnAdd = consumePlaylistAdd); return }
         SettingsTab.EPG -> { tv.own.owntv.features.settings.EpgSourcesScreen(onBack = { tab = SettingsTab.ROOT; consumeEpgAdd = false }, modifier = modifier, startOnAdd = consumeEpgAdd); return }
         SettingsTab.PROFILES -> { ManageProfilesScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier); return }
         SettingsTab.BACKUP -> { Toned(TileTone.TERTIARY) { BackupScreen(onBack = { tab = SettingsTab.ROOT }, modifier = modifier) }; return }
