@@ -1116,3 +1116,4 @@
 1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	guide
 1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	series
 1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	movies
+1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	owntv.mega_lite_destination
