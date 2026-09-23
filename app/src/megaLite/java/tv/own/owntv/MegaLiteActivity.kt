@@ -1,31 +1,15 @@
 package tv.own.owntv
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -37,189 +21,86 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinInject
+import org.koin.androidx.compose.koinViewModel
+import tv.own.owntv.core.epg.EpgSourceStore
+import tv.own.owntv.core.theme.AccentColor
+import tv.own.owntv.core.theme.ThemeMode
+import tv.own.owntv.features.epg.EpgScreen
+import tv.own.owntv.features.live.LiveScreen
+import tv.own.owntv.features.movies.MoviesScreen
+import tv.own.owntv.features.series.SeriesScreen
+import tv.own.owntv.features.settings.SettingsViewModel
+import tv.own.owntv.ui.theme.OwnTVTheme
 
-private val MegaBlack = Color(0xFF07080A)
-private val MegaPanel = Color(0xFF101216)
-private val MegaPanelRaised = Color(0xFF171A20)
-private val MegaLine = Color(0xFF292D34)
-private val MegaMuted = Color(0xFF8B929C)
-private val MegaOrange = Color(0xFFF59E0B)
-private val MegaOrangeSoft = Color(0xFF2A1D08)
+private val Black = Color(0xFF07080A)
+private val Panel = Color(0xFF111318)
+private val Raised = Color(0xFF191C22)
+private val Line = Color(0xFF2B3038)
+private val Muted = Color(0xFF8C949F)
+private val Orange = Color(0xFFF59E0B)
+
+private enum class Page { HOME, LIVE, SERIES, MOVIES, EPG, SETUP }
 
 class MegaLiteActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MegaLiteHome(
-                onOpenFullApp = { destination ->
-                    val intent = Intent(this, MainActivity::class.java).apply {
-                        putExtra(
-                            EXTRA_MEGA_LITE_DESTINATION,
-                            when (destination) {
-                                "LIVE TV" -> "guide"
-                                "SERIES" -> "series"
-                                "MOVIES" -> "movies"
-                                "ADD PLAYLIST" -> "playlist"
-                                "ADD EPG" -> "epg"
-                                else -> null
-                            },
-                        )
-                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    }
-                    startActivity(intent)
-                },
-            )
+            OwnTVTheme(
+                themeMode = ThemeMode.DARK,
+                accent = AccentColor.AMBER,
+                systemInDarkTheme = true,
+            ) {
+                MegaLiteApp(onExit = { finish() })
+            }
         }
     }
 }
 
 @Composable
-private fun MegaLiteHome(onOpenFullApp: (String) -> Unit) {
-    val firstFocus = remember { FocusRequester() }
-    var focusedTitle by remember { mutableStateOf("LIVE TV") }
+private fun MegaLiteApp(onExit: () -> Unit) {
+    var page by remember { mutableStateOf(Page.HOME) }
+    var setupTab by remember { mutableStateOf(0) }
 
-    LaunchedEffect(Unit) {
-        firstFocus.requestFocus()
-    }
+    BackHandlerCompat(enabled = page != Page.HOME) { page = Page.HOME }
+    BackHandlerCompat(enabled = page == Page.HOME) { onExit() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MegaBlack)
-            .padding(horizontal = 64.dp, vertical = 34.dp),
+    Column(
+        modifier = Modifier.fillMaxSize().background(Black),
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            MegaHeader()
-
-            Spacer(Modifier.height(26.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(18.dp),
-            ) {
-                MegaHeroCard(
-                    modifier = Modifier
-                        .weight(1.55f)
-                        .height(176.dp),
-                    title = "Your TV, simplified",
-                    subtitle = "Live channels, series and movies in one place.",
-                    focused = focusedTitle == "HERO",
-                    onFocused = { focusedTitle = "HERO" },
-                    onSelected = { onOpenFullApp("LIVE TV") },
+        MegaTopBar(page, onHome = { page = Page.HOME })
+        Box(modifier = Modifier.fillMaxSize().padding(horizontal = 42.dp, vertical = 24.dp)) {
+            when (page) {
+                Page.HOME -> MegaHome(
+                    onPage = { page = it },
+                    onSetup = { setupTab = it; page = Page.SETUP },
                 )
-
-                MegaStatusCard(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(176.dp),
+                Page.LIVE -> LiveScreen(
+                    onFullscreen = {},
+                    onChildFocused = {},
+                    previewEnabled = true,
+                    modifier = Modifier.fillMaxSize(),
                 )
-            }
-
-            Spacer(Modifier.height(22.dp))
-
-            Text(
-                text = "WATCH",
-                color = MegaMuted,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.8.sp,
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                MegaWatchCard(
-                    item = MegaLiteItem("LIVE TV", "LIVE", "Watch live channels"),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(190.dp)
-                        .then(if (focusedTitle == "LIVE TV") Modifier.focusRequester(firstFocus) else Modifier),
-                    focused = focusedTitle == "LIVE TV",
-                    onFocused = { focusedTitle = "LIVE TV" },
-                    onSelected = { onOpenFullApp("LIVE TV") },
+                Page.SERIES -> SeriesScreen(
+                    onFullscreen = {},
+                    onChildFocused = {},
+                    modifier = Modifier.fillMaxSize(),
                 )
-                MegaWatchCard(
-                    item = MegaLiteItem("SERIES", "SERIES", "Browse your shows"),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(190.dp),
-                    focused = focusedTitle == "SERIES",
-                    onFocused = { focusedTitle = "SERIES" },
-                    onSelected = { onOpenFullApp("SERIES") },
+                Page.MOVIES -> MoviesScreen(
+                    onFullscreen = {},
+                    onChildFocused = {},
+                    modifier = Modifier.fillMaxSize(),
                 )
-                MegaWatchCard(
-                    item = MegaLiteItem("MOVIES", "MOVIES", "Find something to watch"),
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(190.dp),
-                    focused = focusedTitle == "MOVIES",
-                    onFocused = { focusedTitle = "MOVIES" },
-                    onSelected = { onOpenFullApp("MOVIES") },
-                )
-            }
-
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "QUICK SETUP",
-                color = MegaMuted,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.8.sp,
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                MegaSetupCard(
-                    title = "ADD PLAYLIST",
-                    detail = "Connect your TV service",
-                    symbol = "+",
-                    focused = focusedTitle == "ADD PLAYLIST",
-                    modifier = Modifier.weight(1f),
-                    onFocused = { focusedTitle = "ADD PLAYLIST" },
-                    onSelected = { onOpenFullApp("ADD PLAYLIST") },
-                )
-                MegaSetupCard(
-                    title = "ADD EPG",
-                    detail = "Add programme guide data",
-                    symbol = "▤",
-                    focused = focusedTitle == "ADD EPG",
-                    modifier = Modifier.weight(1f),
-                    onFocused = { focusedTitle = "ADD EPG" },
-                    onSelected = { onOpenFullApp("ADD EPG") },
-                )
-                Spacer(Modifier.weight(1f))
-            }
-
-            Spacer(Modifier.weight(1f))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "MEGA LITE",
-                    color = Color(0xFF5F6670),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.4.sp,
-                )
-                Text(
-                    text = "D-pad to navigate  •  OK to select",
-                    color = Color(0xFF626974),
-                    fontSize = 12.sp,
+                Page.EPG -> MegaEpgScreen(onHome = { page = Page.HOME })
+                Page.SETUP -> MegaSetupScreen(
+                    initialTab = setupTab,
+                    onDone = { page = Page.HOME },
                 )
             }
         }
@@ -227,287 +108,226 @@ private fun MegaLiteHome(onOpenFullApp: (String) -> Unit) {
 }
 
 @Composable
-private fun MegaHeader() {
+private fun MegaTopBar(page: Page, onHome: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth().height(78.dp)
+            .background(Color(0xFF0B0D10))
+            .padding(horizontal = 42.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Box(
-                modifier = Modifier
-                    .size(38.dp)
-                    .background(MegaOrange, RoundedCornerShape(11.dp)),
+                modifier = Modifier.size(38.dp).background(Orange, RoundedCornerShape(11.dp)),
                 contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "O",
-                    color = MegaBlack,
-                    fontSize = 21.sp,
-                    fontWeight = FontWeight.Black,
-                )
-            }
+            ) { Text("O", color = Black, fontSize = 21.sp, fontWeight = FontWeight.Black) }
             Column {
-                Text(
-                    text = "OwnTVz",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "MEGA LITE",
-                    color = MegaOrange,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 2.sp,
-                )
+                Text("OwnTVz", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text("MEGA LITE", color = Orange, fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
             }
         }
-
-        Row(
-            modifier = Modifier
-                .background(MegaPanel, RoundedCornerShape(20.dp))
-                .border(1.dp, MegaLine, RoundedCornerShape(20.dp))
-                .padding(horizontal = 14.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(7.dp)
-                    .background(Color(0xFF55C271), RoundedCornerShape(50)),
-            )
-            Text(
-                text = "READY",
-                color = Color(0xFFB9C1CB),
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.1.sp,
-            )
+        if (page != Page.HOME) {
+            FocusButton("HOME", onClick = onHome, modifier = Modifier.width(130.dp))
+        } else {
+            Text("LEAN • FAST • SIMPLE", color = Muted, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.4.sp)
         }
     }
 }
 
 @Composable
-private fun MegaHeroCard(
-    modifier: Modifier,
-    title: String,
-    subtitle: String,
-    focused: Boolean,
-    onFocused: () -> Unit,
-    onSelected: () -> Unit,
+private fun MegaHome(
+    onPage: (Page) -> Unit,
+    onSetup: (Int) -> Unit,
 ) {
-    MegaFocusablePanel(
-        modifier = modifier,
-        focused = focused,
-        onFocused = onFocused,
-        onSelected = onSelected,
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = "WELCOME BACK",
-                color = MegaOrange,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.7.sp,
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(18.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+            HeroCard(
+                modifier = Modifier.weight(1.6f),
+                title = "Your TV. Simplified.",
+                subtitle = "A clean, fast interface with the original playback engine underneath.",
+                onClick = { onPage(Page.LIVE) },
             )
+            StatusCard(modifier = Modifier.weight(1f))
+        }
+
+        Text("WATCH", color = Muted, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.8.sp)
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            HomeCard("LIVE TV", "Channels", { onPage(Page.LIVE) })
+            HomeCard("SERIES", "Shows & episodes", { onPage(Page.SERIES) })
+            HomeCard("MOVIES", "Films", { onPage(Page.MOVIES) })
+            HomeCard("EPG", "Programme guide", { onPage(Page.EPG) })
+        }
+
+        Text("QUICK SETUP", color = Muted, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.8.sp)
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            HomeCard("ADD PLAYLIST", "M3U / service URL", { onSetup(0) }, Modifier.weight(1f))
+            HomeCard("ADD EPG", "XMLTV guide URL", { onSetup(1) }, Modifier.weight(1f))
+            Spacer(Modifier.weight(1f))
+        }
+
+        Spacer(Modifier.weight(1f))
+        Text(
+            "The old sidebar and old Mega Lite launcher UI are not used in this build.",
+            color = Color(0xFF5E6670),
+            fontSize = 11.sp,
+        )
+    }
+}
+
+@Composable
+private fun HeroCard(modifier: Modifier, title: String, subtitle: String, onClick: () -> Unit) {
+    FocusPanel(modifier.height(178.dp).then(modifier), onClick) {
+        Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Text("MEGA LITE", color = Orange, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.8.sp)
             Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                Text(
-                    text = title,
-                    color = Color.White,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = subtitle,
-                    color = MegaMuted,
-                    fontSize = 14.sp,
-                )
+                Text(title, color = Color.White, fontSize = 29.sp, fontWeight = FontWeight.Bold)
+                Text(subtitle, color = Muted, fontSize = 13.sp)
             }
         }
     }
 }
 
 @Composable
-private fun MegaStatusCard(modifier: Modifier) {
-    Box(
-        modifier = modifier
-            .background(MegaPanel, RoundedCornerShape(18.dp))
-            .border(1.dp, MegaLine, RoundedCornerShape(18.dp))
-            .padding(22.dp),
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = "SETUP STATUS",
-                color = MegaMuted,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.6.sp,
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                MegaStatusRow("Playlist", "Add when ready")
-                MegaStatusRow("EPG", "Optional")
-            }
+private fun StatusCard(modifier: Modifier) {
+    Box(modifier.height(178.dp).then(modifier).background(Panel, RoundedCornerShape(18.dp)).border(1.dp, Line, RoundedCornerShape(18.dp)).padding(22.dp)) {
+        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+            Text("BUILT AROUND THE CORE", color = Muted, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.5.sp)
+            Text("Playback, playlists, EPG and content handling stay intact. Only the presentation layer is being replaced.", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
         }
     }
 }
 
 @Composable
-private fun MegaStatusRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(label, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-        Text(value, color = MegaMuted, fontSize = 12.sp)
-    }
-}
-
-private data class MegaLiteItem(
-    val title: String,
-    val tag: String,
-    val detail: String,
-)
-
-@Composable
-private fun MegaWatchCard(
-    item: MegaLiteItem,
-    modifier: Modifier,
-    focused: Boolean,
-    onFocused: () -> Unit,
-    onSelected: () -> Unit,
-) {
-    MegaFocusablePanel(
-        modifier = modifier,
-        focused = focused,
-        onFocused = onFocused,
-        onSelected = onSelected,
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(if (focused) MegaOrangeSoft else Color(0xFF191C21), RoundedCornerShape(10.dp))
-                    .padding(horizontal = 10.dp, vertical = 6.dp),
-            ) {
-                Text(
-                    text = item.tag,
-                    color = if (focused) MegaOrange else MegaMuted,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.3.sp,
-                )
-            }
-
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = item.title,
-                    color = Color.White,
-                    fontSize = 23.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = item.detail,
-                    color = MegaMuted,
-                    fontSize = 12.sp,
-                )
-            }
+private fun RowScope.HomeCard(title: String, detail: String, onClick: () -> Unit, modifier: Modifier = Modifier.weight(1f)) {
+    FocusPanel(modifier.height(126.dp).then(modifier), onClick) {
+        Column(Modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(detail, color = if (title.startsWith("ADD")) Orange else Muted, fontSize = 11.sp)
         }
     }
 }
 
 @Composable
-private fun MegaSetupCard(
-    title: String,
-    detail: String,
-    symbol: String,
-    focused: Boolean,
-    modifier: Modifier,
-    onFocused: () -> Unit,
-    onSelected: () -> Unit,
-) {
-    MegaFocusablePanel(
-        modifier = modifier.height(82.dp),
-        focused = focused,
-        onFocused = onFocused,
-        onSelected = onSelected,
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 18.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            Text(
-                text = symbol,
-                color = if (focused) MegaOrange else Color.White,
-                fontSize = 27.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text = title,
-                    color = Color.White,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = detail,
-                    color = MegaMuted,
-                    fontSize = 11.sp,
-                )
-            }
+private fun MegaSetupScreen(initialTab: Int, onDone: () -> Unit) {
+    var tab by remember(initialTab) { mutableIntStateOf(initialTab) }
+    val vm: SettingsViewModel = koinViewModel()
+    val epgStore: EpgSourceStore = koinInject()
+    val scope = rememberCoroutineScope()
+    var playlistName by remember { mutableStateOf("") }
+    var playlistUrl by remember { mutableStateOf("") }
+    var playlistEpg by remember { mutableStateOf("") }
+    var epgName by remember { mutableStateOf("UK EPG") }
+    var epgUrl by remember { mutableStateOf("https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz") }
+    var message by remember { mutableStateOf("") }
+
+    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text("QUICK SETUP", color = Orange, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.8.sp)
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            FocusButton("PLAYLIST", { tab = 0 }, Modifier.width(180.dp))
+            FocusButton("EPG", { tab = 1 }, Modifier.width(180.dp))
         }
-    }
-}
-
-@Composable
-private fun MegaFocusablePanel(
-    modifier: Modifier,
-    focused: Boolean,
-    onFocused: () -> Unit,
-    onSelected: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    val borderColor by animateColorAsState(
-        targetValue = if (focused) MegaOrange else MegaLine,
-        label = "megaLiteBorder",
-    )
-    val borderWidth by animateDpAsState(
-        targetValue = if (focused) 2.dp else 1.dp,
-        label = "megaLiteBorderWidth",
-    )
-    val background = if (focused) MegaPanelRaised else MegaPanel
-
-    Box(
-        modifier = modifier
-            .border(borderWidth, borderColor, RoundedCornerShape(18.dp))
-            .background(background, RoundedCornerShape(18.dp))
-            .onFocusChanged { if (it.isFocused) onFocused() }
-            .onKeyEvent {
-                if (
-                    it.type == KeyEventType.KeyUp &&
-                    (it.key == Key.Enter || it.key == Key.DirectionCenter)
-                ) {
-                    onSelected()
-                    true
+        if (tab == 0) {
+            Text("Add your playlist without opening the old Settings screen.", color = Muted, fontSize = 13.sp)
+            MegaInput("NAME", playlistName, { playlistName = it })
+            MegaInput("M3U / SERVICE URL", playlistUrl, { playlistUrl = it })
+            MegaInput("OPTIONAL PLAYLIST EPG URL", playlistEpg, { playlistEpg = it })
+            FocusButton("ADD PLAYLIST", {
+                if (playlistUrl.isBlank()) {
+                    message = "Enter a playlist URL first."
                 } else {
-                    false
+                    vm.addM3u(
+                        name = playlistName.ifBlank { "Playlist" },
+                        url = playlistUrl,
+                        epgUrl = playlistEpg,
+                    )
+                    message = "Playlist import started."
                 }
-            }
-            .focusable(),
-    ) {
-        content()
+            }, Modifier.width(220.dp))
+        } else {
+            Text("Add a standalone XMLTV source.", color = Muted, fontSize = 13.sp)
+            MegaInput("NAME", epgName, { epgName = it })
+            MegaInput("XMLTV URL", epgUrl, { epgUrl = it })
+            FocusButton("ADD EPG", {
+                if (epgUrl.isBlank()) {
+                    message = "Enter an EPG URL first."
+                } else {
+                    scope.launch {
+                        epgStore.add(epgName.ifBlank { "EPG" }, epgUrl)
+                        message = "EPG source added."
+                    }
+                }
+            }, Modifier.width(220.dp))
+        }
+        if (message.isNotBlank()) Text(message, color = Orange, fontSize = 13.sp)
+        Spacer(Modifier.weight(1f))
+        FocusButton("DONE", onDone, Modifier.width(150.dp))
     }
+}
+
+@Composable
+private fun MegaInput(label: String, value: String, onValueChange: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(label, color = Muted, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.3.sp)
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = true,
+            textStyle = TextStyle(color = Color.White, fontSize = 15.sp),
+            modifier = Modifier.fillMaxWidth().height(48.dp)
+                .background(Panel, RoundedCornerShape(12.dp))
+                .border(1.dp, Line, RoundedCornerShape(12.dp))
+                .padding(horizontal = 14.dp, vertical = 13.dp),
+        )
+    }
+}
+
+@Composable
+private fun MegaEpgScreen(onHome: () -> Unit) {
+    val liveVm: tv.own.owntv.features.live.LiveViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
+    EpgScreen(
+        onBack = onHome,
+        onFullscreen = {},
+        onPlayChannel = { channel, _ ->
+            scope.launch { liveVm.ensurePlayingByIdAsync(channel.id, false) }
+        },
+        onPlayCatchup = { channel, programme ->
+            liveVm.playCatchupProgramme(channel, programme)
+        },
+        onAddEpg = onHome,
+        modifier = Modifier.fillMaxSize(),
+    )
+}
+
+@Composable
+private fun FocusPanel(modifier: Modifier, onClick: () -> Unit, content: @Composable () -> Unit) {
+    var focused by remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .onFocusChanged { focused = it.isFocused }
+            .border(2.dp, if (focused) Orange else Line, RoundedCornerShape(18.dp))
+            .background(if (focused) Raised else Panel, RoundedCornerShape(18.dp))
+            .focusable()
+            .onKeyEvent {
+                if (it.type == KeyEventType.KeyUp && (it.key == Key.Enter || it.key == Key.DirectionCenter)) {
+                    onClick()
+                    true
+                } else false
+            },
+    ) { content() }
+}
+
+@Composable
+private fun FocusButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) =
+    FocusPanel(modifier.height(48.dp), onClick) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(text, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.2.sp)
+        }
+    }
+
+@Composable
+private fun BackHandlerCompat(enabled: Boolean, onBack: () -> Unit) {
+    androidx.activity.compose.BackHandler(enabled = enabled, onBack = onBack)
 }
