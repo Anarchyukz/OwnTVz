@@ -34,8 +34,6 @@
 1	performance	app/src/main/java/tv/own/owntv/MainActivity.kt	destination-ready
 1	performance	app/src/main/java/tv/own/owntv/MainActivity.kt	first-composition
 2	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	none
-1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onCreate deepLinkHost=${intent.data?.host} deepLinkType=${pendingDeepLink?.javaClass?.simpleName ?: "none"}
-1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onNewIntent deepLinkHost=${intent.data?.host} deepLinkType=${pendingDeepLink?.javaClass?.simpleName ?: "none"}
 1	performance	app/src/main/java/tv/own/owntv/MainActivity.kt	profile-id-loaded
 1	performance	app/src/main/java/tv/own/owntv/MainActivity.kt	profiles-loaded
 1	compiler	app/src/main/java/tv/own/owntv/OwnTVApp.kt	DEPRECATION
@@ -1113,8 +1111,3 @@
 1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	application/octet-stream
 1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	text/plain
 
-5	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	guide
-5	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	series
-5	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	movies
-1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onCreate megaLite=${megaLiteDestination ?: "none"}
-1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onNewIntent megaLite=${megaLiteDestination ?: "none"}
