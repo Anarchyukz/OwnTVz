@@ -49,6 +49,8 @@ class MegaLiteActivity : ComponentActivity() {
                             "TV GUIDE" -> "guide"
                             "SERIES" -> "series"
                             "MOVIES" -> "movies"
+                            "ADD PLAYLIST" -> "playlist"
+                            "ADD EPG" -> "epg"
                             else -> null
                         })
                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -66,6 +68,8 @@ private fun MegaLiteHome(onOpenFullApp: (String) -> Unit) {
         MegaLiteItem("TV GUIDE", "▦"),
         MegaLiteItem("SERIES", "▶"),
         MegaLiteItem("MOVIES", "▰"),
+        MegaLiteItem("ADD PLAYLIST", "+"),
+        MegaLiteItem("ADD EPG", "✚"),
     )
     var focusedIndex by remember { mutableStateOf(0) }
 
