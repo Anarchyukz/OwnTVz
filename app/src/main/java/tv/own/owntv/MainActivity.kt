@@ -69,7 +69,7 @@ import kotlin.math.min
 
 /** Logcat tag for the background-image loader (top-level helper outside MainActivity). */
 private const val BG_TAG = "BgImage"
-private const val EXTRA_MEGA_LITE_DESTINATION = "owntv.mega_lite_destination"
+internal const val EXTRA_MEGA_LITE_DESTINATION = "owntv.mega_lite_destination"
 
 class MainActivity : ComponentActivity() {
     companion object {
