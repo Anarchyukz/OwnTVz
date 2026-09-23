@@ -105,6 +105,7 @@ class MainActivity : ComponentActivity() {
     // The sole locale authority (SharedPreferences-backed; see docs/internationalization.md 0b).
     private val localeStore: tv.own.owntv.core.i18n.LocaleStore by inject()
     private var pendingDeepLink by mutableStateOf<LauncherDeepLink?>(null)
+    private var megaLiteDestination by mutableStateOf<String?>(null)
 
     /**
      * Wrap the Activity base with the selected locale so its own `Resources` resolve correctly —
@@ -121,7 +122,8 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         pendingDeepLink = LauncherDeepLink.parse(intent.data)
-        Log.d(TAG, "onNewIntent deepLinkHost=${intent.data?.host} deepLinkType=${pendingDeepLink?.javaClass?.simpleName ?: "none"}")
+        megaLiteDestination = intent.getStringExtra(EXTRA_MEGA_LITE_DESTINATION)
+        Log.d(TAG, "onNewIntent megaLite=${megaLiteDestination ?: "none"}")
     }
 
     override fun onStop() {
@@ -185,7 +187,8 @@ class MainActivity : ComponentActivity() {
         val splashDeadline = SystemClock.uptimeMillis() + SPLASH_TIMEOUT_MS
         splash.setKeepOnScreenCondition { !contentReady && SystemClock.uptimeMillis() < splashDeadline }
         pendingDeepLink = LauncherDeepLink.parse(intent.data)
-        Log.d(TAG, "onCreate deepLinkHost=${intent.data?.host} deepLinkType=${pendingDeepLink?.javaClass?.simpleName ?: "none"}")
+        megaLiteDestination = intent.getStringExtra(EXTRA_MEGA_LITE_DESTINATION)
+        Log.d(TAG, "onCreate megaLite=${megaLiteDestination ?: "none"}")
         val dbError = probeDatabase()
         if (dbError != null) {
             contentReady = true // the recovery screen IS the destination — don't hold the splash over it
@@ -305,6 +308,16 @@ class MainActivity : ComponentActivity() {
             // "Refresh on startup" — re-sync sources once the active profile is known.
             LaunchedEffect(activeProfileId) {
                 if ((activeProfileId ?: -1L) >= 0L) viewModel.checkAutoRefresh(includeStartup = true)
+            }
+
+            LaunchedEffect(megaLiteDestination, shellReady) {
+                if (!shellReady) return@LaunchedEffect
+                when (megaLiteDestination) {
+                    "guide" -> viewModel.selectSection(MainSection.LIVE_TV)
+                    "series" -> viewModel.selectSection(MainSection.SERIES)
+                    "movies" -> viewModel.selectSection(MainSection.MOVIES)
+                }
+                if (megaLiteDestination != null) megaLiteDestination = null
             }
 
             OwnTVTheme(
