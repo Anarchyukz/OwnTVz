@@ -10,6 +10,9 @@
     <!-- In-app updates: hand the downloaded release APK to the system installer. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- Voice search in the TV search bar. Requested only when the user activates the microphone. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <!-- MODIFY_AUDIO_SETTINGS is declared by :player-core, which owns VolumeBoost. -->
 
     <!-- Android TV provider writes for Watch Next cards. -->
