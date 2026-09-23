@@ -318,6 +318,8 @@ class MainActivity : ComponentActivity() {
                     "guide" -> viewModel.selectSection(MainSection.LIVE_TV)
                     "series" -> viewModel.selectSection(MainSection.SERIES)
                     "movies" -> viewModel.selectSection(MainSection.MOVIES)
+                    "playlist" -> viewModel.selectSection(MainSection.SETTINGS)
+                    "epg" -> viewModel.selectSection(MainSection.SETTINGS)
                 }
                 if (megaLiteDestination != null) megaLiteDestination = null
             }
