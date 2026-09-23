@@ -127,7 +127,7 @@ fun Sidebar(
                 if (entered) scope.launch { runCatching { selectedItemFocusRequester.requestFocus() } }
             }
             .focusGroup()
-            .width(188.dp)
+             .width(208.dp)
             // The top bar owns the complete top strip. The plate starts below it and shares the main
             // content panel's 6 dp bottom inset; the horizontal inset keeps the existing shell gap.
             .padding(start = 10.dp, top = topInset, end = 8.dp, bottom = 8.dp)
@@ -475,21 +475,25 @@ private fun NavItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape)
-                .then(if (active || focused) Modifier.background(
-                    if (active) colors.primary.copy(alpha = 0.18f) else colors.surfaceContainerHigh.copy(alpha = 0.78f),
+                .background(
+                    when {
+                        active -> colors.primary.copy(alpha = 0.18f)
+                        focused -> colors.surfaceContainerHigh.copy(alpha = 0.92f)
+                        else -> colors.surfaceContainerLow.copy(alpha = 0.72f)
+                    },
                     shape,
-                ) else Modifier)
+                )
                 .then(
                     if (active) Modifier.border(1.dp, colors.primary.copy(alpha = if (focused) 0.95f else 0.60f), shape)
                     else if (focused) Modifier.border(tv.own.owntv.ui.theme.LocalFocusBorderWidth.current, ladder.focusBorder ?: colors.primary, shape)
                     else Modifier
                 )
-                .padding(horizontal = 14.dp, vertical = 11.dp),
+                .padding(horizontal = 14.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             Box(
-                modifier = Modifier.size(38.dp).clip(RoundedCornerShape(11.dp)).background(
+                modifier = Modifier.size(40.dp).clip(RoundedCornerShape(11.dp)).background(
                     if (active) colors.primary else colors.surfaceContainerHigh.copy(alpha = 0.72f),
                     RoundedCornerShape(11.dp),
                 ),
