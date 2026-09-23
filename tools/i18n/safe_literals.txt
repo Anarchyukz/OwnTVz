@@ -1111,3 +1111,8 @@
 1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	application/octet-stream
 1	mime	app/src/main/java/tv/own/owntv/features/settings/VpnSettingsScreen.kt	text/plain
 
+1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onNewIntent megaLite=${megaLiteDestination ?: "none"}
+1	log	app/src/main/java/tv/own/owntv/MainActivity.kt	onCreate megaLite=${megaLiteDestination ?: "none"}
+1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	guide
+1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	series
+1	technical	app/src/main/java/tv/own/owntv/MainActivity.kt	movies
