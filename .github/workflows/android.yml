@@ -198,7 +198,7 @@ jobs:
             echo "X86_SRC=$X86_SRC" >> "$GITHUB_ENV"
           else
             echo "Building debug APK"
-            ./gradlew assembleDebug --stacktrace
+            ./gradlew clean assembleStandardDebug --stacktrace
             ARM_SRC=$(ls app/build/outputs/apk/standard/debug/*.apk | head -n1)
             echo "ARM_SRC=$ARM_SRC" >> "$GITHUB_ENV"
 
@@ -214,7 +214,7 @@ jobs:
           if [ "$IS_TAG" = "true" ]; then
             OUT="OwnTV-v${{ steps.ver.outputs.name }}.apk"
           else
-            OUT="OwnTV-standard-debug-${GITHUB_SHA::7}.apk"
+            OUT="OwnTV-standard-final-${GITHUB_SHA::7}.apk"
           fi
           cp "$ARM_SRC" "dist/$OUT"
           if [ -n "$MEGA_LITE_SRC" ]; then
