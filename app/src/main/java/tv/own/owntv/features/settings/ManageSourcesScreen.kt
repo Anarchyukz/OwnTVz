@@ -74,7 +74,7 @@ import tv.own.owntv.ui.theme.OwnTVTheme
 
 /** Phase 13 — list / add / re-sync / delete the active profile's IPTV sources. */
 @Composable
-fun ManageSourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun ManageSourcesScreen(onBack: () -> Unit, modifier: Modifier = Modifier, startOnAdd: Boolean = false) {
     val vm: SettingsViewModel = koinViewModel()
     val sources by vm.sources.collectAsStateWithLifecycle()
     val importState by vm.importState.collectAsStateWithLifecycle()
