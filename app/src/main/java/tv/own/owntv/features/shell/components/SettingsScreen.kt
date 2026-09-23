@@ -209,6 +209,8 @@ fun SettingsScreen(
     onBack: (() -> Unit)? = null,
     openEpgAdd: Boolean = false,
     onEpgAddConsumed: () -> Unit = {},
+     openPlaylistAdd: Boolean = false,
+     onPlaylistAddConsumed: () -> Unit = {},
 ) {
     // A cross-script language change recreates the Activity so Android can apply the new script's
     // shaping and font fallback. Keep the open settings sub-screen across that configuration change
