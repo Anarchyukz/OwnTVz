@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings_epg_uk_preset_url_1">https://iptv-org.github.io/epg/guides/uk/sky.com.epg.xml</string>
-    <string name="settings_epg_uk_preset_url_2">https://iptv-org.github.io/epg/guides/uk/ontvtonight.com.epg.xml</string>
     <string name="settings_epg_uk_preset_url_3">https://epgshare01.online/epgshare01/epg_ripper_UK1.xml.gz</string>
-    <string name="settings_epg_uk_preset_url_4">https://raw.githubusercontent.com/RNIB-MediaAndCulture/Freeview-EPG_AD-filter/master/epg.xml</string>
-    <string name="settings_epg_uk_preset_url_5">https://raw.githubusercontent.com/farleyflex/epg-guide/main/epg.xml</string>
 </resources>
