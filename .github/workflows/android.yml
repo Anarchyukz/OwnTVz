@@ -6,7 +6,7 @@ name: Android CI
 #   build      — assembles an APK on pushes and pull requests; publishes a GitHub Release on v* tags.
 on:
   push:
-    branches: [ main, feature/native-vpn ]
+    branches: [ main, feature/native-vpn, feature/mega-lite ]
     tags: [ "v*" ]
   pull_request:
     branches: [ main ]
@@ -201,6 +201,11 @@ jobs:
             ./gradlew assembleDebug --stacktrace
             ARM_SRC=$(ls app/build/outputs/apk/standard/debug/*.apk | head -n1)
             echo "ARM_SRC=$ARM_SRC" >> "$GITHUB_ENV"
+
+            echo "Building isolated Mega Lite APK"
+            ./gradlew assembleStandardMegaLite --stacktrace
+            MEGA_LITE_SRC=$(ls app/build/outputs/apk/standard/megaLite/*.apk | head -n1)
+            echo "MEGA_LITE_SRC=$MEGA_LITE_SRC" >> "$GITHUB_ENV"
           fi
 
       - name: Name the APK
@@ -212,6 +217,9 @@ jobs:
             OUT="OwnTV-standard-debug-${GITHUB_SHA::7}.apk"
           fi
           cp "$ARM_SRC" "dist/$OUT"
+          if [ -n "$MEGA_LITE_SRC" ]; then
+            cp "$MEGA_LITE_SRC" "dist/OwnTVz-MegaLite-${GITHUB_SHA::7}.apk"
+          fi
           echo "APK_OUT=$OUT" >> "$GITHUB_ENV"
           if [ "$IS_TAG" = "true" ]; then
             cp "$ARM_SRC" "dist/OwnTV.apk"
