@@ -43,8 +43,17 @@ class MegaLiteActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MegaLiteHome(
-                onOpenFullApp = {
-                    startActivity(Intent(this, MainActivity::class.java))
+                onOpenFullApp = { destination ->
+                    val intent = Intent(this, MainActivity::class.java).apply {
+                        putExtra("owntv.mega_lite_destination", when (destination) {
+                            "TV GUIDE" -> "guide"
+                            "SERIES" -> "series"
+                            "MOVIES" -> "movies"
+                            else -> null
+                        })
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    }
+                    startActivity(intent)
                 },
             )
         }
